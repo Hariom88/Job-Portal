@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Link, Navigate, useLocation, useNavigatio
 import { useEffect } from 'react';
 import './App.css';
 
+// Build Version: 2026.04.15.01 (Stable)
 // Context & UI
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { useToast } from './hooks/useHooks';
