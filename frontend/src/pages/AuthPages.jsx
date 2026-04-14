@@ -89,19 +89,26 @@ export function SignupPage() {
 
   const [form, setForm] = useState({ fullName: '', email: '', password: '', role: 'CANDIDATE' });
   const [errors, setErrors] = useState({});
+  const [apiErr, setApiErr] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setApiErr('');
     try {
       await run(() => signup(form));
       navigate('/login');
-    } catch (err) {}
+    } catch (err) {
+      setApiErr(err?.response?.data || 'Signup failed. Please try again.');
+    }
   };
 
   return (
      <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-12">
         <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 space-y-6 text-center">
             <h1 className="text-2xl font-black text-slate-900 uppercase">Create Account</h1>
+            
+            {apiErr && <div className="bg-rose-50 border border-rose-100 text-rose-600 text-[10px] font-black uppercase px-4 py-3 rounded-xl">{apiErr}</div>}
+
             <form onSubmit={handleSubmit} className="space-y-4 text-left">
                 <FormField label="Full Name" value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})} />
                 <FormField label="Email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
