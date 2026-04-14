@@ -101,7 +101,7 @@ export function LoginPage() {
           </div>
 
           <div className="flex items-center justify-between px-2">
-            <Link to="/forgot-password" ***="text-slate-500 text-[10px] font-black uppercase tracking-widest hover:text-blue-400">Recovery</Link>
+            <Link to="/forgot-password" className="text-slate-500 text-[10px] font-black uppercase tracking-widest hover:text-blue-400">Recovery</Link>
           </div>
 
           <button 
