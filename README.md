@@ -23,6 +23,7 @@ To access the Administrative control panel:
 - **Candidate Dashboard**: Search jobs, view details, and track applications.
 - **Company Dashboard**: Post new jobs and manage recruits.
 - **Admin Panel**: Complete control over Users, Companies, and Job Listings.
+- **User Profiles**: Manage personal bio, skills, education, work experience, and profile picture upload.
 - **Mobile Responsive**: Fully optimized for Laptop, Tablet, and Mobile views.
 - **Secure Authentication**: JWT-based session management.
 
