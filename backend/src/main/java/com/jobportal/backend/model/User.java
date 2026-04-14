@@ -28,18 +28,19 @@ public class User {
 
     private String phone;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     private String bio;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String profilePicture;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     private String skills;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     private String experience;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     private String education;
 
     @ManyToOne(fetch = FetchType.EAGER)
