@@ -35,8 +35,8 @@ export default function ProfilePage() {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 1024 * 1024) {
-        addToast("Image too large (max 1MB)", "error");
+      if (file.size > 2 * 1024 * 1024) {
+        addToast("Image too large (max 2MB)", "error");
         return;
       }
       const reader = new FileReader();
@@ -63,130 +63,125 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-4">
+    <div className="min-h-screen bg-[#F8FAFC] py-16 px-4">
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
         className="max-w-4xl mx-auto"
       >
-        <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/60 overflow-hidden border border-slate-100">
-          {/* Header Banner */}
-          <div className="h-40 bg-gradient-to-r from-blue-700 to-indigo-800 relative">
-             <div className="absolute -bottom-16 left-12 group">
-                <div className="relative w-32 h-32 rounded-3xl bg-white p-1 shadow-2xl border border-slate-100 overflow-hidden">
+        <div className="bg-white rounded-[48px] shadow-2xl shadow-slate-200/50 overflow-hidden border border-slate-100 flex flex-col md:flex-row">
+          
+          {/* Left Column: Avatar & Quick Info */}
+          <div className="w-full md:w-80 bg-slate-50 border-r border-slate-100 p-12 flex flex-col items-center space-y-8">
+             <div className="relative group cursor-pointer" onClick={handleImageClick}>
+                <div className="w-48 h-48 rounded-full border-4 border-white shadow-2xl overflow-hidden bg-white ring-8 ring-blue-50 transition-transform hover:scale-105 duration-500">
                   {form.profilePicture ? (
-                    <img src={form.profilePicture} alt="Profile" className="w-full h-full object-cover rounded-2xl" />
+                    <img src={form.profilePicture} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full bg-slate-100 flex items-center justify-center text-4xl font-bold text-slate-300 rounded-2xl uppercase">
+                    <div className="w-full h-full bg-slate-100 flex items-center justify-center text-6xl font-bold text-slate-300 uppercase">
                       {user?.fullName.charAt(0)}
                     </div>
                   )}
-                  {/* Upload Overlay */}
-                  <div 
-                    onClick={handleImageClick}
-                    className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
-                  >
-                     <span className="text-white text-3xl font-light">+</span>
-                  </div>
-                  <input 
+                </div>
+                {/* Modern Plus Icon Button */}
+                <div className="absolute bottom-2 right-2 w-12 h-12 bg-blue-600 rounded-full border-4 border-white flex items-center justify-center text-white shadow-xl hover:bg-blue-700 transition-all scale-90 group-hover:scale-110">
+                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                </div>
+                <input 
                     type="file" 
                     ref={fileInputRef} 
                     onChange={handleFileChange} 
                     accept="image/*" 
                     className="hidden" 
                   />
+             </div>
+
+             <div className="text-center space-y-1">
+                <h2 className="text-xl font-black text-slate-900">{user?.fullName}</h2>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600">{user?.role?.name}</p>
+             </div>
+
+             <div className="w-full pt-8 space-y-4">
+                <div className="bg-white p-4 rounded-2xl border border-slate-100 flex items-center justify-between">
+                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Applications</span>
+                   <span className="text-sm font-black text-slate-900">12</span>
                 </div>
              </div>
           </div>
 
-          <div className="pt-20 pb-12 px-12 space-y-10">
-            <div>
-               <h1 className="text-3xl font-bold text-slate-900">{user?.fullName}</h1>
-               <p className="text-slate-500 font-medium">{user?.role?.name === 'ADMIN' ? 'System Administrator' : user?.role?.name === 'COMPANY' ? 'Hiring Manager' : 'Job Seeker'}</p>
+          {/* Right Column: Form */}
+          <div className="flex-1 p-12 lg:p-16">
+            <div className="mb-12">
+               <h1 className="text-3xl font-black text-slate-900 tracking-tight">Edit My Profile</h1>
+               <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2">Manage your professional digital record</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-10">
-               {/* Section: Basic Information */}
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-6">
-                    <h3 className="text-sm font-bold text-blue-600 uppercase tracking-widest px-1">Basic Info</h3>
-                    <div className="space-y-4">
-                       <div className="space-y-1">
-                          <label className="text-xs font-bold text-slate-400 ml-1">Full Name</label>
-                          <input 
-                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 text-slate-700 font-semibold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
-                            value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})}
-                          />
-                       </div>
-                       <div className="space-y-1">
-                          <label className="text-xs font-bold text-slate-400 ml-1">Phone Number</label>
-                          <input 
-                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 text-slate-700 font-semibold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
-                            placeholder="+91 XXXXX XXXXX"
-                            value={form.phone} onChange={e => setForm({...form, phone: e.target.value})}
-                          />
-                       </div>
-                    </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Contact Phone</label>
+                    <input 
+                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
+                      value={form.phone} onChange={e => setForm({...form, phone: e.target.value})}
+                    />
                   </div>
-
-                  <div className="space-y-6">
-                    <h3 className="text-sm font-bold text-blue-600 uppercase tracking-widest px-1">Professional Bio</h3>
-                    <textarea 
-                      rows="5"
-                      placeholder="Tell us about yourself..."
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-700 font-semibold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all resize-none"
-                      value={form.bio} onChange={e => setForm({...form, bio: e.target.value})}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Identity</label>
+                    <input 
+                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
+                      value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})}
                     />
                   </div>
                </div>
 
-               {/* Section: Skills & Experience */}
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-slate-100">
-                  <div className="space-y-6">
-                    <h3 className="text-sm font-bold text-blue-600 uppercase tracking-widest px-1">Key Skills</h3>
-                    <textarea 
-                      rows="4"
-                      placeholder="React, Java, Spring Boot, UI Design..."
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-700 font-semibold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all resize-none"
-                      value={form.skills} onChange={e => setForm({...form, skills: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-6">
-                    <h3 className="text-sm font-bold text-blue-600 uppercase tracking-widest px-1">Work Experience</h3>
-                    <textarea 
-                      rows="4"
-                      placeholder="Software Engineer at TechCorp (2022 - Present)..."
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-700 font-semibold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all resize-none"
-                      value={form.experience} onChange={e => setForm({...form, experience: e.target.value})}
-                    />
-                  </div>
-               </div>
-
-               {/* Section: Education */}
-               <div className="space-y-6 pt-6 border-t border-slate-100">
-                  <h3 className="text-sm font-bold text-blue-600 uppercase tracking-widest px-1">Education</h3>
+               <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Bio Description</label>
                   <textarea 
                     rows="3"
-                    placeholder="B.Tech in Computer Science - IIT Bombay..."
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-700 font-semibold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all resize-none"
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
+                    value={form.bio} onChange={e => setForm({...form, bio: e.target.value})}
+                  />
+               </div>
+
+               <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Expertise & Skills</label>
+                  <textarea 
+                    rows="2"
+                    placeholder="E.g. React, Java, UI Design..."
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
+                    value={form.skills} onChange={e => setForm({...form, skills: e.target.value})}
+                  />
+               </div>
+
+               <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Experience Journey</label>
+                  <textarea 
+                    rows="2"
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
+                    value={form.experience} onChange={e => setForm({...form, experience: e.target.value})}
+                  />
+               </div>
+
+               <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Education Background</label>
+                  <textarea 
+                    rows="2"
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
                     value={form.education} onChange={e => setForm({...form, education: e.target.value})}
                   />
                </div>
 
-               <div className="pt-8">
+               <div className="pt-6">
                   <button 
                     disabled={loading}
-                    className="group w-full bg-slate-900 text-white py-5 rounded-[20px] font-bold text-sm tracking-widest flex items-center justify-center gap-3 hover:bg-slate-800 transition-all active:scale-[0.98] shadow-2xl shadow-slate-900/10 disabled:opacity-50"
+                    className="w-full bg-slate-900 text-white py-6 rounded-3xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-slate-900/10 hover:bg-slate-800 transition-all active:scale-[0.98] disabled:opacity-50"
                   >
-                    {loading ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    ) : (
-                      <>Save My Profile <span className="text-xl group-hover:translate-x-1 transition-transform">→</span></>
-                    )}
+                    {loading ? "Updating Profile..." : "Update Details"}
                   </button>
                </div>
             </form>
           </div>
+
         </div>
       </motion.div>
     </div>
