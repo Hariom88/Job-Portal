@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from 'react';
+import api from '../services/api';
 import { motion } from 'framer-motion';
 
 const StatCard = ({ title, value, color, icon, delay }) => {
@@ -158,7 +160,5 @@ export default function AdminDashboard() {
         </motion.div>
       </div>
     </div>
-  );
-}
   );
 }
