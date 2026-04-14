@@ -2,15 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useAsync } from '../hooks/useHooks';
-import { FormField, PrimaryButton } from '../components/UI';
 import { motion } from 'framer-motion';
 
 const validate = (fields) => {
   const errs = {};
-  if (!fields.email) errs.email = 'Email is required';
-  else if (!/\S+@\S+\.\S+/.test(fields.email)) errs.email = 'Enter a valid email';
-  if (!fields.password) errs.password = 'Password is required';
-  else if (fields.password.length < 6) errs.password = 'Min 6 characters';
+  if (!fields.email) errs.email = 'Email range required';
+  else if (!/\S+@\S+\.\S+/.test(fields.email)) errs.email = 'Format mismatch';
+  if (!fields.password) errs.password = 'Key required';
   return errs;
 };
 
@@ -20,7 +18,6 @@ export function LoginPage() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ email: '', password: '' });
-  const [errors, setErrors] = useState({});
   const [apiErr, setApiErr] = useState('');
 
   useEffect(() => {
@@ -35,9 +32,6 @@ export function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const errs = validate(form);
-    if (Object.keys(errs).length) { setErrors(errs); return; }
-    setErrors({});
     setApiErr('');
     try {
       await run(() => login(form.email, form.password));
@@ -47,74 +41,63 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0F172A] px-4 relative overflow-hidden">
-      {/* Background Orbs */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[120px]"></div>
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 relative">
+      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none overflow-hidden">
+         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-400 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
+         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-400 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
       </div>
 
       <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md bg-white/5 backdrop-blur-3xl rounded-[48px] border border-white/10 shadow-2xl p-10 space-y-8 relative z-10"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-[440px] bg-white rounded-[40px] shadow-2xl shadow-slate-200/60 p-12 space-y-10 relative z-10 border border-slate-100"
       >
-        <div className="text-center space-y-2">
-          <div className="inline-flex w-14 h-14 bg-blue-600 rounded-2xl items-center justify-center text-white font-black text-2xl shadow-xl shadow-blue-900/40 mb-4">J</div>
-          <h1 className="text-3xl font-black text-white tracking-tighter uppercase leading-none">Authentication</h1>
-          <p className="text-slate-500 text-xs font-black uppercase tracking-[0.2em]">Secure Node Access</p>
+        <div className="text-center space-y-1">
+          <div className="inline-flex w-12 h-12 bg-blue-600 rounded-2xl items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-200 mb-4">J</div>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Welcome Back</h1>
+          <p className="text-slate-400 font-medium">Log in to manage your career</p>
         </div>
 
         {apiErr && (
-          <motion.div 
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-black uppercase px-6 py-4 rounded-2xl text-center"
-          >
+          <div className="bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold px-4 py-3 rounded-2xl text-center">
             {apiErr}
-          </motion.div>
+          </div>
         )}
 
-        <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
-             <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Identifier</label>
+             <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-500 ml-1">Email Address</label>
                 <input 
-                  type="email" 
-                  name="email" 
-                  placeholder="Email sync address"
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-blue-500 transition-all font-bold placeholder:text-slate-700"
-                  value={form.email} 
-                  onChange={handleChange}
+                  type="email" name="email" 
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-semibold"
+                  value={form.email} onChange={handleChange}
                 />
              </div>
-             <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Protocol Key</label>
+             <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-500 ml-1">Password</label>
                 <input 
-                  type="password" 
-                  name="password" 
-                  placeholder="Encryption key"
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-blue-500 transition-all font-bold placeholder:text-slate-700"
-                  value={form.password} 
-                  onChange={handleChange}
+                  type="password" name="password" 
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-semibold"
+                  value={form.password} onChange={handleChange}
                 />
              </div>
           </div>
 
-          <div className="flex items-center justify-between px-2">
-            <Link to="/forgot-password" className="text-slate-500 text-[10px] font-black uppercase tracking-widest hover:text-blue-400">Recovery</Link>
+          <div className="flex justify-end">
+            <Link to="/forgot-password" className="text-slate-400 text-xs font-bold hover:text-blue-600 no-underline transition-colors">Forgot Password?</Link>
           </div>
 
           <button 
-            type="submit" 
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-blue-900/20 hover:bg-blue-500 transition-all active:scale-95 disabled:opacity-50"
+            type="submit" disabled={loading}
+            className="w-full bg-slate-900 text-white py-4.5 rounded-2xl font-bold text-sm tracking-wide shadow-xl shadow-slate-200 hover:bg-slate-800 transition-all active:scale-[0.98] disabled:opacity-50"
           >
-            {loading ? "Decrypting..." : "Initialize Session"}
+            {loading ? "Authenticating..." : "Sign In"}
           </button>
         </form>
 
-        <p className="text-center text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">
-          No account? <Link to="/signup" className="text-blue-500 hover:text-blue-400 transition-colors">Register Identity</Link>
+        <p className="text-center text-sm font-medium text-slate-400">
+          New here? <Link to="/signup" className="text-blue-600 font-bold no-underline hover:underline">Create an account</Link>
         </p>
       </motion.div>
     </div>
@@ -136,64 +119,53 @@ export function SignupPage() {
       await run(() => signup(form));
       navigate('/login');
     } catch (err) {
-      setApiErr(err?.response?.data || 'Protocol error. Verification failed.');
+      setApiErr(err?.response?.data || 'An error occurred during registration');
     }
   };
 
   return (
-     <div className="min-h-screen flex items-center justify-center bg-[#0F172A] px-4 py-12 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
-
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md bg-white/5 backdrop-blur-3xl rounded-[48px] border border-white/10 shadow-2xl p-10 space-y-10 relative z-10"
-        >
-            <div className="text-center space-y-2">
-                <h1 className="text-3xl font-black text-white uppercase tracking-tighter">Registration</h1>
-                <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Create New Node</p>
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-12 relative overflow-hidden">
+        <div className="w-full max-w-[480px] bg-white rounded-[40px] shadow-2xl shadow-slate-200/60 p-12 space-y-8 relative z-10 border border-slate-100">
+            <div className="text-center space-y-1">
+                <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Create Account</h1>
+                <p className="text-slate-400 font-medium">Join thousands of professional builders</p>
             </div>
             
-            {apiErr && <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-black uppercase px-6 py-4 rounded-2xl text-center">{apiErr}</div>}
+            {apiErr && <div className="bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold px-4 py-3 rounded-2xl text-center">{apiErr}</div>}
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4">
-                    <input 
-                      placeholder="Full Name"
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-blue-500 transition-all font-bold text-sm placeholder:text-slate-700"
-                      value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})} 
-                    />
-                    <input 
-                      placeholder="Email Sync"
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-blue-500 transition-all font-bold text-sm placeholder:text-slate-700"
-                      value={form.email} onChange={e => setForm({...form, email: e.target.value})} 
-                    />
-                    <input 
-                      type="password"
-                      placeholder="Security Pin"
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-blue-500 transition-all font-bold text-sm placeholder:text-slate-700"
-                      value={form.password} onChange={e => setForm({...form, password: e.target.value})} 
-                    />
+                    <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-500 ml-1">Full Name</label>
+                        <input className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 font-semibold" value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})} />
+                    </div>
+                    <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-500 ml-1">Email</label>
+                        <input className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 font-semibold" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
+                    </div>
+                    <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-500 ml-1">Password</label>
+                        <input type="password" className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 font-semibold" value={form.password} onChange={e => setForm({...form, password: e.target.value})} />
+                    </div>
                 </div>
 
-                <div className="flex gap-3 bg-white/5 p-2 rounded-[24px] border border-white/10">
-                    <button type="button" onClick={() => setForm({...form, role: 'CANDIDATE'})} className={`flex-1 py-3 rounded-[18px] font-black text-[10px] uppercase tracking-widest transition-all ${form.role === 'CANDIDATE' ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/20' : 'text-slate-500 hover:text-slate-300'}`}>Candidate</button>
-                    <button type="button" onClick={() => setForm({...form, role: 'COMPANY'})} className={`flex-1 py-3 rounded-[18px] font-black text-[10px] uppercase tracking-widest transition-all ${form.role === 'COMPANY' ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/20' : 'text-slate-500 hover:text-slate-300'}`}>Employer</button>
+                <div className="flex gap-4 p-1 bg-slate-50 rounded-[24px] border border-slate-100">
+                    <button type="button" onClick={() => setForm({...form, role: 'CANDIDATE'})} className={`flex-1 py-3 px-4 rounded-[20px] font-bold text-xs transition-all ${form.role === 'CANDIDATE' ? 'bg-white shadow-lg text-blue-600' : 'text-slate-500'}`}>Candidate</button>
+                    <button type="button" onClick={() => setForm({...form, role: 'COMPANY'})} className={`flex-1 py-3 px-4 rounded-[20px] font-bold text-xs transition-all ${form.role === 'COMPANY' ? 'bg-white shadow-lg text-blue-600' : 'text-slate-500'}`}>Employer</button>
                 </div>
 
                 <button 
-                  type="submit" 
-                  disabled={loading}
-                  className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-blue-900/20 hover:bg-blue-500 transition-all active:scale-95 disabled:opacity-50"
+                  type="submit" disabled={loading}
+                  className="w-full bg-slate-900 text-white py-4.5 rounded-2xl font-bold text-sm tracking-wide shadow-xl shadow-slate-200 hover:bg-slate-800 transition-all active:scale-[0.98] disabled:opacity-50"
                 >
-                  {loading ? "Injecting..." : "Finalize Protocol"}
+                  {loading ? "Creating Account..." : "Register Now"}
                 </button>
             </form>
 
-            <p className="text-center text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">
-                Active ID? <Link to="/login" className="text-blue-500 hover:text-blue-400 transition-colors">Synchronize</Link>
+            <p className="text-center text-sm font-medium text-slate-400">
+                Already have an account? <Link to="/login" className="text-blue-600 font-bold no-underline hover:underline">Log in</Link>
             </p>
-        </motion.div>
-     </div>
+        </div>
+    </div>
   );
 }

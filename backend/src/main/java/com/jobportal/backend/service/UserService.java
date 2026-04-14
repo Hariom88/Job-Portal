@@ -47,6 +47,9 @@ public class UserService {
         user.setPhone(details.getPhone());
         user.setBio(details.getBio());
         user.setProfilePicture(details.getProfilePicture());
+        user.setSkills(details.getSkills());
+        user.setExperience(details.getExperience());
+        user.setEducation(details.getEducation());
         return userRepository.save(user);
     }
 }
