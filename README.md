@@ -1,34 +1,60 @@
-# 🚀 Job Portal System - Full Stack Application
+# 🚀 Full-Stack Job Portal System
 
-A comprehensive, production-ready Job Portal System built with **Spring Boot (Backend)** and **React.js (Frontend)**. This platform allows users to find jobs, employers to post job openings, and administrators to manage the entire system.
+A modern, production-ready Job Portal System built with **React, Spring Boot, and MySQL**.
 
-## ✨ Key Features
+## 🌐 Live Deployment Links
 
-- **🔐 Secure Authentication**: JWT-based authentication with Role-Based Access Control (RBAC).
-- **📱 OTP Verification**: Integrated 2Factor API for secure OTP-based login.
-- **💼 Job Management**: Complete CRUD operations for jobs (Post, Edit, Delete, View).
-- **📊 Admin Dashboard**: Real-time analytics, user management, and detailed reports.
-- **🎨 Modern UI**: Beautiful, responsive interface built with Tailwind CSS.
-
-## 🛠️ Tech Stack
-
-### Frontend
-- **React.js** (Vite), **Tailwind CSS**, **Axios**
-
-### Backend
-- **Java Spring Boot**, **Spring Security (JWT)**, **MySQL**, **Spring Data JPA**
+| Component | Platform | URL |
+| :--- | :--- | :--- |
+| **Frontend** | Vercel | [https://job-portal-prrm7ggig-hariom-dubeys-projects.vercel.app/](https://job-portal-prrm7ggig-hariom-dubeys-projects.vercel.app/) |
+| **Backend API** | Railway | [https://zonal-youthfulness-production.up.railway.app/](https://zonal-youthfulness-production.up.railway.app/) |
+| **Database** | Railway | MySQL (Managed Instance) |
 
 ---
 
-## 🚀 Setup Instructions
-
-### Backend Setup
-1. Configure database in `backend/src/main/resources/application.properties`.
-2. Run: `./mvnw spring-boot:run`
-
-### Frontend Setup
-1. Install dependencies: `npm install` (inside frontend folder).
-2. Start Dev Server: `npm run dev`
+## 🔑 Admin Credentials
+To access the Administrative control panel:
+- **Email**: `admin@jobportal.com`
+- **Password**: `admin123`
 
 ---
-**Developed with ❤️ by [Hariom](https://github.com/Hariom88)**
+
+## ✨ Features
+- **Candidate Dashboard**: Search jobs, view details, and track applications.
+- **Company Dashboard**: Post new jobs and manage recruits.
+- **Admin Panel**: Complete control over Users, Companies, and Job Listings.
+- **Mobile Responsive**: Fully optimized for Laptop, Tablet, and Mobile views.
+- **Secure Authentication**: JWT-based session management.
+
+---
+
+## 🛠️ Technology Stack
+- **Frontend**: React.js, Tailwind CSS, Vite.
+- **Backend**: Java Spring Boot, Spring Security, JPA/Hibernate.
+- **Database**: MySQL.
+- **Deployment**: Vercel (Frontend) & Railway (Backend).
+
+---
+
+## 📂 Project Structure
+```bash
+├── backend/            # Spring Boot Application
+├── frontend/           # React Application
+├── pom.xml             # Root Maven configuration (Monorepo)
+└── system.properties   # Environment configuration
+```
+
+## 🚀 How to Run Locally
+
+### Backend:
+1. Navigate to `/backend`.
+2. Update `application.properties` with your MySQL credentials.
+3. Run `./mvnw spring-boot:run`.
+
+### Frontend:
+1. Navigate to `/frontend`.
+2. Create `.env` and set `VITE_API_BASE_URL=http://localhost:8080/api`.
+3. Run `npm install` and `npm run dev`.
+
+---
+*Developed by Hariom Dubey*
