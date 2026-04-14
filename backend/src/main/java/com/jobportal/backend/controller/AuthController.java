@@ -84,4 +84,12 @@ public class AuthController {
 
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/test")
+    public ResponseEntity<?> testConnection() {
+        Map<String, Object> status = new HashMap<>();
+        status.put("message", "Backend is running!");
+        status.put("database_connected", userRepository.count() >= 0);
+        status.put("admin_exists", userRepository.findByEmail("admin@jobportal.com").isPresent());
+        return ResponseEntity.ok(status);
+    }
 }
