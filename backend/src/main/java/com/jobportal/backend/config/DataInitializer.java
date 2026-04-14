@@ -29,25 +29,25 @@ public class DataInitializer implements CommandLineRunner {
         initRole("CANDIDATE");
 
         // 2. Initialize Default Admin
-        if (userRepository.findByEmail("admin@jobportal.com").isEmpty()) {
+        User admin = userRepository.findByEmail("admin@jobportal.com").orElse(new User());
+        if (admin.getEmail() == null) {
             Role adminRole = roleRepository.findByName("ADMIN")
                     .orElseThrow(() -> new RuntimeException("Error: Role ADMIN is not found."));
-
-            User admin = new User();
             admin.setFullName("Super Admin");
             admin.setEmail("admin@jobportal.com");
-            admin.setPassword(passwordEncoder.encode("Admin@123"));
             admin.setRole(adminRole);
             admin.setPhone("0000000000");
             admin.setEnabled(true);
-
-            userRepository.save(admin);
-            System.out.println("--------------------------------------------------");
-            System.out.println("✅ DEFAULT ADMIN CREATED SUCCESSFULLY");
-            System.out.println("📧 Email: admin@jobportal.com");
-            System.out.println("🔑 Password: Admin@123");
-            System.out.println("--------------------------------------------------");
         }
+        // Always reset password to ensure it's correct
+        admin.setPassword(passwordEncoder.encode("admin123"));
+        userRepository.save(admin);
+        
+        System.out.println("--------------------------------------------------");
+        System.out.println("✅ ADMIN ACCOUNT READY");
+        System.out.println("📧 Email: admin@jobportal.com");
+        System.out.println("🔑 Password: admin123");
+        System.out.println("--------------------------------------------------");
     }
 
     private void initRole(String roleName) {
