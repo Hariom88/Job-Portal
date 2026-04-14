@@ -50,8 +50,16 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-6">
           <NavLinks />
           <div className="w-px h-6 bg-slate-200 mx-2"></div>
+          
           {user ? (
             <div className="flex items-center gap-4">
+               <Link to="/profile" className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 group-hover:scale-105 transition-transform">
+                  {user.profilePicture ? (
+                    <img src={user.profilePicture} alt="P" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-xs font-black text-slate-400">{user.fullName.charAt(0)}</span>
+                  )}
+               </Link>
                <button onClick={handleLogout} className="px-4 py-2 rounded-xl bg-rose-50 text-rose-600 font-bold text-xs uppercase tracking-widest border border-rose-100 hover:bg-rose-100 transition-all">Log Out</button>
             </div>
           ) : (

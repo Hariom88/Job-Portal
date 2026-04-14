@@ -40,4 +40,13 @@ public class UserService {
         user.setRole(role);
         userRepository.save(user);
     }
+
+    public User updateProfile(Long id, User details) {
+        User user = getUserById(id);
+        user.setFullName(details.getFullName());
+        user.setPhone(details.getPhone());
+        user.setBio(details.getBio());
+        user.setProfilePicture(details.getProfilePicture());
+        return userRepository.save(user);
+    }
 }

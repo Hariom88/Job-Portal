@@ -28,6 +28,11 @@ public class User {
 
     private String phone;
 
+    @Column(length = 1000)
+    private String bio;
+
+    private String profilePicture;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;

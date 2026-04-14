@@ -90,4 +90,10 @@ export const adminService = {
   getApplicationsSummary: () => api.get('/admin/reports/applications-summary'),
 };
 
+// ─── User Services ────────────────────────────────────────────────────────────
+export const userService = {
+  getUser:        (id)   => api.get(`/users/${id}`),
+  updateProfile:  (id, data) => api.put(`/users/${id}/profile`, data),
+};
+
 export default api;

@@ -25,6 +25,7 @@ import AdminReports from './pages/AdminReports';
 import { LoginPage, SignupPage } from './pages/AuthPages';
 import { PostJobPage } from './pages/JobForms';
 import { ForgotPassword, ResetPassword } from './pages/PasswordReset';
+import ProfilePage from './pages/ProfilePage';
 
 // SCROLL RESTORATION
 function ScrollToTop() {
@@ -60,6 +61,7 @@ function AppContent() {
         <Route path="/signup" element={!user ? <SignupPage /> : <Navigate to="/" replace />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/profile" element={<ProtectedRoute condition={!!user}><ProfilePage /></ProtectedRoute>} />
 
         {/* ADMIN ROUTES (Wrapped in AdminLayout) */}
         <Route path="/admin/*" element={
