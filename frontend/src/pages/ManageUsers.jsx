@@ -43,17 +43,18 @@ export default function ManageUsers() {
   if (loading) return <Spinner />;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10 space-y-8 animate-slide-up">
-      <div className="flex justify-between items-end">
+    <div className="max-w-7xl mx-auto px-4 py-6 lg:py-10 space-y-6 lg:space-y-8 animate-slide-up">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">User Management</h1>
-          <p className="text-slate-500 font-medium">Manage platform access, roles, and status</p>
+          <h1 className="text-2xl lg:text-3xl font-black text-slate-900 uppercase tracking-tighter">User Management</h1>
+          <p className="text-sm text-slate-500 font-medium">Manage platform access, roles, and status</p>
         </div>
-        <div className="text-slate-400 font-bold text-xs uppercase tracking-widest">{users.length} Total Users</div>
+        <div className="text-slate-400 font-bold text-[10px] uppercase tracking-widest bg-white px-3 py-1.5 rounded-lg border border-slate-100">{users.length} Total Users</div>
       </div>
 
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
-        <table className="w-full text-left border-collapse">
+      <div className="bg-white rounded-2xl lg:rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+        <div className="overflow-x-auto scrollbar-hide">
+          <table className="w-full text-left border-collapse min-w-[800px]">
           <thead className="bg-slate-50 border-b border-slate-200">
             <tr>
               <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">User Identification</th>
@@ -117,6 +118,7 @@ export default function ManageUsers() {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 }

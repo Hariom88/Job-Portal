@@ -42,11 +42,24 @@ public class DataInitializer implements CommandLineRunner {
         // Always reset password to ensure it's correct
         admin.setPassword(passwordEncoder.encode("admin123"));
         userRepository.save(admin);
+
+        // 3. Initialize Default Candidate for testing
+        User testCandidate = userRepository.findByEmail("candidate@test.com").orElse(new User());
+        if (testCandidate.getEmail() == null) {
+            Role candRole = roleRepository.findByName("CANDIDATE")
+                    .orElseThrow(() -> new RuntimeException("Error: Role CANDIDATE is not found."));
+            testCandidate.setFullName("John Candidate");
+            testCandidate.setEmail("candidate@test.com");
+            testCandidate.setRole(candRole);
+            testCandidate.setPhone("1234567890");
+            testCandidate.setEnabled(true);
+            testCandidate.setPassword(passwordEncoder.encode("pass123"));
+            userRepository.save(testCandidate);
+        }
         
         System.out.println("--------------------------------------------------");
-        System.out.println("✅ ADMIN ACCOUNT READY");
-        System.out.println("📧 Email: admin@jobportal.com");
-        System.out.println("🔑 Password: admin123");
+        System.out.println("✅ ADMIN ACCOUNT READY: admin@jobportal.com / admin123");
+        System.out.println("✅ TEST CANDIDATE READY: candidate@test.com / pass123");
         System.out.println("--------------------------------------------------");
     }
 

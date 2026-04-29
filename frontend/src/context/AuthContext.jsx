@@ -39,7 +39,7 @@ export function AuthProvider({ children }) {
   };
 
   // ── Role helpers ───────────────────────────────────────────────────────────
-  const userRole   = user?.role?.name;
+  const userRole   = user?.role?.name?.toUpperCase();
   const isAdmin     = userRole === 'ADMIN';
   const isCompany   = userRole === 'COMPANY';
   const isCandidate = userRole === 'CANDIDATE';
