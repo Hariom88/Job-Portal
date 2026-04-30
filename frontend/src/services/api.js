@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // ─── Base Config ─────────────────────────────────────────────────────────────
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api',
+  baseURL: 'https://prime-job-portal-live.up.railway.app/api',
   timeout: 15000,
   headers: { 'Content-Type': 'application/json' },
 });
