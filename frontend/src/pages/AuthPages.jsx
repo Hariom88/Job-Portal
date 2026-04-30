@@ -19,6 +19,7 @@ export function LoginPage() {
 
   const [form, setForm] = useState({ email: '', password: '' });
   const [apiErr, setApiErr] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -76,11 +77,20 @@ export function LoginPage() {
              </div>
              <div className="space-y-1">
                 <label className="text-xs font-bold text-slate-500 ml-1">Password</label>
-                <input 
-                  type="password" name="password" 
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-semibold"
-                  value={form.password} onChange={handleChange}
-                />
+                <div className="relative">
+                  <input 
+                    type={showPassword ? "text" : "password"} name="password" 
+                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-semibold"
+                    value={form.password} onChange={handleChange}
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 font-bold text-xs"
+                  >
+                    {showPassword ? "HIDE" : "SHOW"}
+                  </button>
+                </div>
              </div>
           </div>
 
@@ -111,6 +121,7 @@ export function SignupPage() {
 
   const [form, setForm] = useState({ fullName: '', email: '', password: '', role: 'CANDIDATE' });
   const [apiErr, setApiErr] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -145,7 +156,21 @@ export function SignupPage() {
                     </div>
                     <div className="space-y-1">
                         <label className="text-xs font-bold text-slate-500 ml-1">Password</label>
-                        <input type="password" className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 font-semibold" value={form.password} onChange={e => setForm({...form, password: e.target.value})} />
+                        <div className="relative">
+                          <input 
+                            type={showPassword ? "text" : "password"} 
+                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 font-semibold" 
+                            value={form.password} 
+                            onChange={e => setForm({...form, password: e.target.value})} 
+                          />
+                          <button 
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 font-bold text-xs"
+                          >
+                            {showPassword ? "HIDE" : "SHOW"}
+                          </button>
+                        </div>
                     </div>
                 </div>
 
