@@ -85,6 +85,23 @@ public class AuthController {
 
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/reset-admin")
+    public ResponseEntity<?> resetAdmin() {
+        User admin = userRepository.findByEmail("admin@jobportal.com").orElse(new User());
+        Role adminRole = roleRepository.findByName("ADMIN")
+                .orElseGet(() -> roleRepository.save(new Role(null, "ADMIN")));
+        
+        admin.setEmail("admin@jobportal.com");
+        admin.setFullName("Super Admin");
+        admin.setRole(adminRole);
+        admin.setPassword(passwordEncoder.encode("admin123"));
+        admin.setEnabled(true);
+        
+        userRepository.save(admin);
+        
+        return ResponseEntity.ok("Admin account has been force-reset to: admin@jobportal.com / admin123");
+    }
+
     @GetMapping("/test")
     public ResponseEntity<?> testConnection() {
         Map<String, Object> status = new HashMap<>();
