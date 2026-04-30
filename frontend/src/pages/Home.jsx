@@ -66,57 +66,57 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 pt-24 pb-32 px-4">
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 pt-20 md:pt-24 pb-28 md:pb-32 px-4">
         {/* Grid bg */}
         <div className="absolute inset-0 opacity-[0.07]"
           style={{ backgroundImage: 'linear-gradient(#3b82f6 1px,transparent 1px),linear-gradient(90deg,#3b82f6 1px,transparent 1px)', backgroundSize: '60px 60px' }} />
         {/* Glow blobs */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-[120px]" />
+        <div className="absolute top-0 left-1/4 w-72 md:w-96 h-72 md:h-96 bg-blue-600/20 rounded-full blur-[100px] md:blur-[120px]" />
+        <div className="absolute bottom-0 right-1/4 w-72 md:w-96 h-72 md:h-96 bg-violet-600/20 rounded-full blur-[100px] md:blur-[120px]" />
 
-        <div className="max-w-5xl mx-auto relative z-10 text-center space-y-8">
+        <div className="max-w-5xl mx-auto relative z-10 text-center space-y-6 md:space-y-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-sm font-semibold">
+            className="inline-flex items-center gap-2 px-4 md:px-5 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-[10px] md:text-sm font-semibold uppercase tracking-widest">
             <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
             {jobs.length > 0 ? `${jobs.length} New Jobs Posted` : 'Hiring is live'}
           </motion.div>
 
           <motion.h1 initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-black text-white tracking-tight leading-[1.05]">
+            className="text-4xl sm:text-5xl md:text-7xl font-black text-white tracking-tight leading-[1.1] md:leading-[1.05]">
             Find Your Dream<br />
             <span className="bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">Career Today.</span>
           </motion.h1>
 
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-            className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto font-medium">
+            className="text-slate-400 text-base md:text-xl max-w-2xl mx-auto font-medium px-4">
             Connect with top companies and land your perfect role — from internships to senior leadership.
           </motion.p>
 
           {/* Search Bar */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-            className="max-w-4xl mx-auto">
-            <div className="flex flex-col md:flex-row gap-3 p-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl md:rounded-full shadow-2xl">
-              <div className="flex-1 flex items-center gap-3 bg-white rounded-xl md:rounded-full px-5 py-2">
-                <span className="text-slate-400">🔍</span>
+            className="max-w-4xl mx-auto pt-4">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-3 p-2 md:p-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl md:rounded-full shadow-2xl">
+              <div className="flex-1 flex items-center gap-3 bg-white rounded-xl md:rounded-full px-4 md:px-5 py-1 md:py-2">
+                <span className="text-slate-400 text-sm">🔍</span>
                 <input
                   type="text" placeholder="Job title, skills..."
-                  className="w-full py-2 outline-none text-slate-900 font-semibold placeholder:text-slate-400 bg-transparent text-sm"
+                  className="w-full py-2 outline-none text-slate-900 font-semibold placeholder:text-slate-400 bg-transparent text-xs md:text-sm"
                   value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
                 />
               </div>
-              <div className="flex-1 flex items-center gap-3 bg-white rounded-xl md:rounded-full px-5 py-2">
-                <span className="text-slate-400">📍</span>
+              <div className="flex-1 flex items-center gap-3 bg-white rounded-xl md:rounded-full px-4 md:px-5 py-1 md:py-2">
+                <span className="text-slate-400 text-sm">📍</span>
                 <input
                   type="text" placeholder="Location..."
-                  className="w-full py-2 outline-none text-slate-900 font-semibold placeholder:text-slate-400 bg-transparent text-sm"
+                  className="w-full py-2 outline-none text-slate-900 font-semibold placeholder:text-slate-400 bg-transparent text-xs md:text-sm"
                   value={location} onChange={e => setLocation(e.target.value)}
                 />
               </div>
-              <div className="flex-[0.5] flex items-center gap-3 bg-white rounded-xl md:rounded-full px-5 py-2">
-                <span className="text-slate-400">💰</span>
+              <div className="flex-[0.6] flex items-center gap-3 bg-white rounded-xl md:rounded-full px-4 md:px-5 py-1 md:py-2">
+                <span className="text-slate-400 text-sm">💰</span>
                 <input
                   type="number" placeholder="Min Salary"
-                  className="w-full py-2 outline-none text-slate-900 font-semibold placeholder:text-slate-400 bg-transparent text-sm"
+                  className="w-full py-2 outline-none text-slate-900 font-semibold placeholder:text-slate-400 bg-transparent text-xs md:text-sm"
                   value={minSalary} onChange={e => setMinSalary(e.target.value)}
                 />
               </div>
@@ -125,15 +125,16 @@ export default function Home() {
 
           {/* Stats */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
-            className="flex flex-wrap justify-center gap-8 pt-4">
+            className="flex flex-wrap justify-center gap-6 md:gap-8 pt-4">
             {STATS.map(s => (
-              <div key={s.label} className="text-center">
-                <div className="text-2xl font-black text-white">{s.value}</div>
-                <div className="text-slate-500 text-xs font-semibold tracking-wide">{s.label}</div>
+              <div key={s.label} className="text-center px-2">
+                <div className="text-xl md:text-2xl font-black text-white">{s.value}</div>
+                <div className="text-slate-500 text-[10px] md:text-xs font-semibold tracking-wide uppercase">{s.label}</div>
               </div>
             ))}
           </motion.div>
         </div>
+      </section>v>
       </section>
 
       {/* ── Filter Pills ── */}
