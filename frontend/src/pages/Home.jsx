@@ -134,7 +134,6 @@ export default function Home() {
             ))}
           </motion.div>
         </div>
-      </section>v>
       </section>
 
       {/* ── Filter Pills ── */}
