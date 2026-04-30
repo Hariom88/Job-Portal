@@ -115,9 +115,11 @@ export function LoginPage() {
                <div className="space-y-1.5">
                   <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Email Address</label>
                   <input 
-                    type="email" name="email" required
+                    type="email" 
+                    required
                     className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-slate-900 outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 transition-all font-semibold shadow-sm"
-                    value={form.email} onChange={handleChange}
+                    value={form.email} 
+                    onChange={e => setForm({...form, email: e.target.value})}
                     placeholder="name@company.com"
                   />
                </div>
@@ -128,9 +130,11 @@ export function LoginPage() {
                   </div>
                   <div className="relative">
                     <input 
-                      type={showPassword ? "text" : "password"} name="password" required
+                      type={showPassword ? "text" : "password"} 
+                      required
                       className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-slate-900 outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 transition-all font-semibold shadow-sm"
-                      value={form.password} onChange={handleChange}
+                      value={form.password} 
+                      onChange={e => setForm({...form, password: e.target.value})}
                       placeholder="••••••••"
                     />
                     <button 
@@ -145,15 +149,11 @@ export function LoginPage() {
             </div>
 
             <button 
-              type="submit" disabled={loading}
+              type="submit" 
+              disabled={loading}
               className="w-full bg-slate-900 text-white py-4 rounded-xl font-bold text-sm shadow-xl shadow-slate-200 hover:bg-slate-800 hover:-translate-y-0.5 transition-all active:scale-[0.98] disabled:opacity-50 disabled:hover:translate-y-0 flex items-center justify-center h-[52px]"
             >
-              {loading ? (
-                 <span className="flex items-center justify-center gap-2">
-                   <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                   Authenticating...
-                 </span>
-              ) : "Sign In"}
+              {loading ? "Authenticating..." : "Sign In"}
             </button>
           </form>
 
