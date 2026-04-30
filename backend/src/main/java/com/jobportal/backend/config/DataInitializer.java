@@ -41,7 +41,7 @@ public class DataInitializer implements CommandLineRunner {
         }
         // Always reset password and ensure enabled
         admin.setEnabled(true);
-        admin.setPassword(passwordEncoder.encode("admin123"));
+        admin.setPassword(passwordEncoder.encode("admin@123"));
         userRepository.save(admin);
 
         // 3. Initialize Default Candidate for testing
