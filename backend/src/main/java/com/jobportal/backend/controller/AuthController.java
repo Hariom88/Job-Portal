@@ -51,7 +51,8 @@ public class AuthController {
         user.setFullName(request.get("fullName"));
         user.setPhone(request.get("phone"));
 
-        String roleName = request.get("role").toUpperCase();
+        String roleNameRaw = request.get("role");
+        String roleName = (roleNameRaw != null) ? roleNameRaw.toUpperCase() : "CANDIDATE";
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new RuntimeException("Role not found: " + roleName));
         user.setRole(role);
