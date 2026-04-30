@@ -33,6 +33,9 @@ public class Job {
     private Integer experienceRequired;
     private String jobType; // Full-time, Remote, etc.
     private String industry; // IT, Finance, Healthcare, etc.
+    
+    @Column(columnDefinition = "TEXT")
+    private String requiredSkills; // Comma separated list of required skills
 
     private String status = "PENDING"; // PENDING, APPROVED, REJECTED, OPEN, CLOSED
     private Integer viewsCount = 0;

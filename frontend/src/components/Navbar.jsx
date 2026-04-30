@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import NotificationBell from './NotificationBell';
 
 export default function Navbar() {
   const { user, logout, isAdmin, isCompany, isCandidate, dashboardPath } = useAuth();
@@ -53,6 +54,7 @@ export default function Navbar() {
           
           {user ? (
             <div className="flex items-center gap-4">
+               <NotificationBell />
                <Link to="/profile" className="w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden border-2 border-white ring-2 ring-slate-100 hover:ring-blue-500 transition-all">
                   {user.profilePicture ? (
                     <img src={user.profilePicture} alt="P" className="w-full h-full object-cover" />

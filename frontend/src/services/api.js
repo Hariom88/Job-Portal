@@ -96,4 +96,44 @@ export const userService = {
   updateProfile:  (id, data) => api.put(`/users/${id}/profile`, data),
 };
 
+// ─── Notification Services ──────────────────────────────────────────────────────
+export const notificationService = {
+  getUserNotifications: () => api.get('/notifications'),
+  getUnreadCount: () => api.get('/notifications/unread-count'),
+  markAsRead: (id) => api.put(`/notifications/${id}/read`),
+  markAllAsRead: () => api.put('/notifications/read-all'),
+};
+
+// ─── Chat Services ─────────────────────────────────────────────────────────────
+export const chatService = {
+  initChat: (targetUserId) => api.post(`/chat/init?targetUserId=${targetUserId}`),
+  getMyChats: () => api.get('/chat/my-chats'),
+  getMessages: (chatId) => api.get(`/chat/${chatId}/messages`),
+};
+
+// ─── AI & Search Services ────────────────────────────────────────────────────
+export const aiService = {
+  getJobMatchScore: (jobId) => api.get(`/ai/match/${jobId}`)
+};
+
+export const searchService = {
+  searchJobs: (q, location, minSalary, maxExperience) => {
+    let url = `/search/jobs?`;
+    if (q) url += `q=${encodeURIComponent(q)}&`;
+    if (location) url += `location=${encodeURIComponent(location)}&`;
+    if (minSalary) url += `minSalary=${minSalary}&`;
+    if (maxExperience) url += `maxExperience=${maxExperience}&`;
+    return api.get(url);
+  },
+  syncAllToElastic: () => api.post('/search/sync-all')
+};
+
+// ─── Interview Services ──────────────────────────────────────────────────────
+export const interviewService = {
+  schedule: (data) => api.post('/interviews/schedule', data),
+  getEmployerInterviews: () => api.get('/interviews/employer'),
+  getCandidateInterviews: () => api.get('/interviews/candidate'),
+  updateStatus: (id, status) => api.put(`/interviews/${id}/status?status=${status}`)
+};
+
 export default api;

@@ -36,6 +36,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/ws-connect/**").permitAll()
                 .requestMatchers("/api/jobs/**").permitAll() // Viewing jobs is public
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/jobs/post").hasRole("COMPANY")

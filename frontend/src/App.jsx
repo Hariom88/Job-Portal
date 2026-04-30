@@ -6,6 +6,7 @@ import './App.css';
 // Build Version: 2026.04.15.01 (Stable)
 // Context & UI
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { NotificationProvider } from './context/NotificationContext';
 import { useToast } from './hooks/useHooks';
 import { ToastContainer, ProtectedRoute } from './components/UI';
 
@@ -116,7 +117,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppContent />
+        <NotificationProvider>
+          <AppContent />
+        </NotificationProvider>
       </AuthProvider>
     </BrowserRouter>
   );
