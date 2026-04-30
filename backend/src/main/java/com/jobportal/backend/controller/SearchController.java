@@ -1,13 +1,8 @@
 package com.jobportal.backend.controller;
 
-import com.jobportal.backend.model.JobDocument;
-import com.jobportal.backend.service.ElasticsearchSyncService;
+import com.jobportal.backend.model.Job;
+import com.jobportal.backend.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,61 +14,58 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SearchController {
 
-    private final ElasticsearchOperations elasticsearchOperations;
-    private final ElasticsearchSyncService syncService;
+    private final JobRepository jobRepository;
 
-    // Trigger full manual sync
-    @PostMapping("/sync-all")
-    public ResponseEntity<String> syncAll() {
-        syncService.syncAllJobs();
-        return ResponseEntity.ok("All MySQL jobs synced to Elasticsearch successfully.");
-    }
-
-    // Advanced Search API using Elasticsearch
+    /**
+     * Fallback search using MySQL LIKE queries.
+     * Production-safe: works without Elasticsearch.
+     * Can be upgraded to Elasticsearch later by swapping this implementation.
+     */
     @GetMapping("/jobs")
-    public ResponseEntity<List<JobDocument>> searchJobs(
-            @RequestParam(required = false) String q, // Keyword
+    public ResponseEntity<List<Job>> searchJobs(
+            @RequestParam(required = false) String q,
             @RequestParam(required = false) String location,
             @RequestParam(required = false) Double minSalary,
             @RequestParam(required = false) Integer maxExperience) {
 
-        Criteria criteria = new Criteria();
+        List<Job> jobs = jobRepository.findAll();
 
-        // 1. Keyword full text search
+        // Only show OPEN jobs (using String comparison)
+        jobs = jobs.stream().filter(job -> "OPEN".equals(job.getStatus())).collect(Collectors.toList());
+
+        // Filter keyword (title, description, skills)
         if (q != null && !q.trim().isEmpty()) {
-            criteria = criteria.and(new Criteria("title").contains(q)
-                    .or("description").contains(q)
-                    .or("requiredSkills").contains(q)
-                    .or("companyName").contains(q));
+            String keyword = q.toLowerCase().trim();
+            jobs = jobs.stream().filter(job ->
+                (job.getTitle() != null && job.getTitle().toLowerCase().contains(keyword)) ||
+                (job.getDescription() != null && job.getDescription().toLowerCase().contains(keyword)) ||
+                (job.getRequiredSkills() != null && job.getRequiredSkills().toLowerCase().contains(keyword)) ||
+                (job.getCompany() != null && job.getCompany().getName() != null && job.getCompany().getName().toLowerCase().contains(keyword))
+            ).collect(Collectors.toList());
         }
 
-        // 2. Exact match on location
+        // Filter by location
         if (location != null && !location.trim().isEmpty()) {
-            criteria = criteria.and(new Criteria("location").is(location));
+            String loc = location.toLowerCase().trim();
+            jobs = jobs.stream().filter(job ->
+                job.getLocation() != null && job.getLocation().toLowerCase().contains(loc)
+            ).collect(Collectors.toList());
         }
 
-        // 3. Salary filter
+        // Filter by minimum salary
         if (minSalary != null) {
-            criteria = criteria.and(new Criteria("salaryMax").greaterThanEqual(minSalary));
+            jobs = jobs.stream().filter(job ->
+                job.getSalaryMax() != null && job.getSalaryMax() >= minSalary
+            ).collect(Collectors.toList());
         }
 
-        // 4. Experience filter
+        // Filter by max experience required
         if (maxExperience != null) {
-            criteria = criteria.and(new Criteria("experienceRequired").lessThanEqual(maxExperience));
+            jobs = jobs.stream().filter(job ->
+                job.getExperienceRequired() != null && job.getExperienceRequired() <= maxExperience
+            ).collect(Collectors.toList());
         }
-        
-        // Only show OPEN jobs
-        criteria = criteria.and(new Criteria("status").is("OPEN"));
 
-        CriteriaQuery query = new CriteriaQuery(criteria);
-        
-        // Execute search
-        SearchHits<JobDocument> searchHits = elasticsearchOperations.search(query, JobDocument.class);
-
-        List<JobDocument> results = searchHits.getSearchHits().stream()
-                .map(SearchHit::getContent)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(results);
+        return ResponseEntity.ok(jobs);
     }
 }
