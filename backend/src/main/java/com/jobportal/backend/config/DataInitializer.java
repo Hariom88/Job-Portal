@@ -39,7 +39,8 @@ public class DataInitializer implements CommandLineRunner {
             admin.setPhone("0000000000");
             admin.setEnabled(true);
         }
-        // Always reset password to ensure it's correct
+        // Always reset password and ensure enabled
+        admin.setEnabled(true);
         admin.setPassword(passwordEncoder.encode("admin123"));
         userRepository.save(admin);
 
