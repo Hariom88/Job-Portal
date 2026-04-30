@@ -95,7 +95,6 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
-                    <skipTests>true</skipTests>
 				</configuration>
 			</plugin>
 		</plugins>
