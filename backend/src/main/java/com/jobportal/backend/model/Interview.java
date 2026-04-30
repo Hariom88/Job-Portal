@@ -21,7 +21,7 @@ public class Interview {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "application_id", nullable = false)
-    private Application application;
+    private JobApplication application;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employer_id", nullable = false)

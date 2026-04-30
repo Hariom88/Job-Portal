@@ -1,10 +1,10 @@
 package com.jobportal.backend.service;
 
 import com.jobportal.backend.dto.InterviewDTO;
-import com.jobportal.backend.model.Application;
 import com.jobportal.backend.model.Interview;
+import com.jobportal.backend.model.JobApplication;
 import com.jobportal.backend.model.User;
-import com.jobportal.backend.repository.ApplicationRepository;
+import com.jobportal.backend.repository.JobApplicationRepository;
 import com.jobportal.backend.repository.InterviewRepository;
 import com.jobportal.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.List;
 public class InterviewService {
 
     private final InterviewRepository interviewRepository;
-    private final ApplicationRepository applicationRepository;
+    private final JobApplicationRepository jobApplicationRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
     private final EmailService emailService;
@@ -30,7 +30,7 @@ public class InterviewService {
             throw new RuntimeException("An interview is already scheduled for this application.");
         }
 
-        Application application = applicationRepository.findById(dto.getApplicationId())
+        JobApplication application = jobApplicationRepository.findById(dto.getApplicationId())
                 .orElseThrow(() -> new RuntimeException("Application not found"));
 
         User employer = userRepository.findById(employerId)
