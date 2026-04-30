@@ -29,7 +29,11 @@ export function LoginPage() {
     try {
       await run(() => login(form.email, form.password));
     } catch (err) {
-      setApiErr(err?.response?.data || 'Invalid email or password');
+      if (!err.response) {
+        setApiErr('Server is unreachable. Please check if backend is running.');
+      } else {
+        setApiErr(err?.response?.data || 'Invalid email or password');
+      }
     }
   };
 
