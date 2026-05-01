@@ -17,6 +17,31 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
+  // ── Inactivity Timeout (10 minutes) ────────────────────────────────────────
+  useEffect(() => {
+    if (!user) return;
+
+    let timeout;
+    const resetTimer = () => {
+      if (timeout) clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        alert("Session Expired due to inactivity. Please login again.");
+        logout();
+      }, 10 * 60 * 1000); // 10 minutes
+    };
+
+    // Events to track activity
+    const events = ['mousedown', 'keydown', 'scroll', 'touchstart', 'mousemove'];
+    events.forEach(event => window.addEventListener(event, resetTimer));
+
+    resetTimer(); // Initialize timer
+
+    return () => {
+      if (timeout) clearTimeout(timeout);
+      events.forEach(event => window.removeEventListener(event, resetTimer));
+    };
+  }, [user]);
+
   // ── Login ──────────────────────────────────────────────────────────────────
   const login = async (email, password) => {
     const { data } = await authService.login({ email, password });
