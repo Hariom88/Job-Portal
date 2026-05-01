@@ -21,100 +21,98 @@ export function LoginPage() {
     }
   }, [user, navigate]);
 
-  const handleChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setApiErr('');
     try {
       await run(() => login(form.email, form.password));
     } catch (err) {
-      if (!err.response) {
-        setApiErr('Server is unreachable. Please check if backend is running.');
-      } else {
-        const msg = err.response.data?.message || err.response.data;
-        setApiErr(typeof msg === 'string' ? msg : 'Invalid email or password');
-      }
+      const msg = err.response?.data?.message || err.response?.data;
+      setApiErr(typeof msg === 'string' ? msg : 'Invalid email or password');
     }
   };
 
   return (
-    <div className="min-h-screen flex bg-white dark:bg-slate-950 font-['Outfit'] overflow-hidden">
+    <div className="min-h-screen flex bg-slate-50 dark:bg-[#05070a] font-['Outfit'] overflow-hidden relative">
+      {/* BACKGROUND DECORATIONS (Floating Glows) */}
+      <div className="absolute top-[-10%] left-[-10%] w-[300px] h-[300px] bg-blue-600/10 dark:bg-blue-600/20 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[300px] h-[300px] bg-indigo-600/10 dark:bg-indigo-600/20 rounded-full blur-[100px] pointer-events-none animate-pulse" style={{ animationDelay: '1s' }}></div>
+
       {/* Left Panel - Brand / Visual (Desktop Only) */}
       <div className="hidden lg:flex lg:w-1/2 relative bg-slate-950 overflow-hidden flex-col justify-center p-16">
-        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-600/30 rounded-full blur-[120px] mix-blend-screen pointer-events-none"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-600/30 rounded-full blur-[120px] mix-blend-screen pointer-events-none"></div>
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#ffffff 1px,transparent 1px),linear-gradient(90deg,#ffffff 1px,transparent 1px)', backgroundSize: '40px 40px' }}></div>
+        <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
         <Link to="/" className="absolute top-16 left-16 z-10 flex items-center gap-3 no-underline text-white">
           <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-xl shadow-lg shadow-blue-500/30">J</div>
           <span className="text-2xl font-black tracking-tight">PrimeJobs</span>
         </Link>
         <div className="relative z-10 space-y-8">
-          <motion.h2 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-5xl font-black text-white leading-[1.1] tracking-tight">
-            The fastest way to <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">hire top talent.</span>
+          <motion.h2 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-6xl font-black text-white leading-tight tracking-tighter">
+            Elevate your <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400">Career.</span>
           </motion.h2>
-          <p className="text-slate-400 text-lg font-medium max-w-md leading-relaxed">Join thousands of modern companies and ambitious professionals building the future together.</p>
+          <p className="text-slate-400 text-lg font-medium max-w-md leading-relaxed">The modern platform for elite professionals and world-class companies.</p>
         </div>
       </div>
 
-      {/* Right Panel - Form (Mobile Optimized) */}
-      <div className="w-full lg:w-1/2 flex flex-col items-center justify-between p-6 sm:p-12 md:p-24 relative bg-white dark:bg-slate-950 min-h-screen h-full">
+      {/* Right Panel - Form (Mobile Optimized Premium) */}
+      <div className="w-full lg:w-1/2 flex flex-col items-center justify-between p-6 sm:p-12 relative min-h-screen">
         
-        {/* MOBILE TOP HERO SECTION */}
-        <div className="lg:hidden w-full space-y-6 pt-4 text-center">
-          <div className="flex items-center justify-center gap-3">
-             <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center font-black text-white shadow-lg shadow-blue-500/20">J</div>
-             <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white">PrimeJobs</span>
-          </div>
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }} 
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-blue-600/5 dark:bg-blue-600/10 border border-blue-600/10 p-5 rounded-[24px] space-y-2"
-          >
-             <h2 className="text-lg font-black text-slate-900 dark:text-white">Unlock your career.</h2>
-             <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">Join 10,000+ professionals <br/> finding their dream roles daily.</p>
+        {/* MOBILE TOP SECTION */}
+        <div className="lg:hidden w-full pt-8 text-center space-y-4">
+          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-full border border-blue-100 dark:border-blue-800">
+             <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
+             <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">Platform Online</span>
           </motion.div>
+          <div className="space-y-1">
+             <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter">PrimeJobs</h1>
+             <p className="text-[11px] text-slate-400 font-bold uppercase tracking-[0.3em]">Next-Gen Hiring</p>
+          </div>
         </div>
 
+        {/* GLASS FORM CARD */}
         <motion.div 
-          initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}
-          className="w-full max-w-[400px] space-y-8"
+          initial={{ opacity: 0, y: 30 }} 
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-[420px] bg-white/80 dark:bg-white/[0.03] backdrop-blur-xl p-8 md:p-12 rounded-[40px] border border-white dark:border-white/10 shadow-2xl shadow-slate-200 dark:shadow-none space-y-8 relative"
         >
-          <div className="space-y-1">
-            <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Log In</h1>
-            <p className="text-slate-500 dark:text-slate-400 font-medium text-xs">Access your personal workspace.</p>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Welcome Back</h2>
+            <p className="text-slate-500 dark:text-slate-400 font-medium text-sm">Please enter your account details.</p>
           </div>
 
           {apiErr && (
-            <div className="bg-rose-50 dark:bg-rose-900/10 border border-rose-100 dark:border-rose-900/20 text-rose-600 dark:text-rose-400 text-xs font-bold px-4 py-3 rounded-xl flex items-center gap-2 animate-shake">
+            <motion.div initial={{ x: -10 }} animate={{ x: 0 }} className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 text-rose-600 dark:text-rose-400 text-xs font-bold px-4 py-3 rounded-2xl">
               {apiErr}
-            </div>
+            </motion.div>
           )}
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
-               <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Email</label>
-                  <input 
-                    type="email" required
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white outline-none focus:border-blue-600 transition-all font-semibold text-sm"
-                    value={form.email} onChange={e => setForm({...form, email: e.target.value})}
-                    placeholder="name@company.com"
-                  />
+               <div className="group">
+                  <label className="text-[10px] font-black text-slate-400 group-focus-within:text-blue-600 transition-colors uppercase tracking-widest ml-1 mb-2 block">Email</label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 opacity-30 group-focus-within:opacity-100 transition-opacity">📧</span>
+                    <input 
+                      type="email" required
+                      className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 rounded-2xl pl-12 pr-4 py-4 text-slate-900 dark:text-white outline-none focus:border-blue-600 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all font-semibold text-sm"
+                      value={form.email} onChange={e => setForm({...form, email: e.target.value})}
+                      placeholder="name@company.com"
+                    />
+                  </div>
                </div>
-               <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Password</label>
-                    <Link to="/forgot-password" className="text-blue-600 text-[10px] font-bold hover:underline no-underline">Forgot?</Link>
+               <div className="group">
+                  <div className="flex items-center justify-between ml-1 mb-2">
+                    <label className="text-[10px] font-black text-slate-400 group-focus-within:text-blue-600 transition-colors uppercase tracking-widest">Password</label>
+                    <Link to="/forgot-password" className="text-blue-600 text-[10px] font-black hover:underline no-underline">FORGOT?</Link>
                   </div>
                   <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 opacity-30 group-focus-within:opacity-100 transition-opacity">🔑</span>
                     <input 
                       type={showPassword ? "text" : "password"} required
-                      className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white outline-none focus:border-blue-600 transition-all font-semibold text-sm"
+                      className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 rounded-2xl pl-12 pr-12 py-4 text-slate-900 dark:text-white outline-none focus:border-blue-600 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all font-semibold text-sm"
                       value={form.password} onChange={e => setForm({...form, password: e.target.value})}
                       placeholder="••••••••"
                     />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-[10px]">
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-[10px] hover:text-blue-600">
                       {showPassword ? "HIDE" : "SHOW"}
                     </button>
                   </div>
@@ -123,25 +121,20 @@ export function LoginPage() {
 
             <button 
               type="submit" disabled={loading}
-              className="w-full bg-slate-900 dark:bg-blue-600 text-white py-4 rounded-xl font-bold text-sm shadow-xl shadow-slate-200 dark:shadow-blue-900/20 hover:bg-slate-800 transition-all active:scale-[0.98] disabled:opacity-50 h-[52px]"
+              className="w-full bg-slate-900 dark:bg-blue-600 text-white py-4.5 rounded-2xl font-black text-sm shadow-2xl shadow-slate-200 dark:shadow-blue-900/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 h-[56px] flex items-center justify-center gap-2"
             >
-              {loading ? "Authenticating..." : "Sign In"}
+              {loading ? "Authenticating..." : "Sign In to PrimeJobs"}
             </button>
           </form>
 
-          <p className="text-center text-[13px] font-semibold text-slate-500 dark:text-slate-400">
-            No account? <Link to="/signup" className="text-blue-600 font-bold hover:underline no-underline ml-1">Create one</Link>
+          <p className="text-center text-[13px] font-bold text-slate-400">
+            New here? <Link to="/signup" className="text-blue-600 dark:text-blue-400 font-black no-underline hover:underline ml-1">Create Account</Link>
           </p>
         </motion.div>
 
-        {/* MOBILE FOOTER SOCIAL PROOF */}
-        <div className="lg:hidden w-full text-center pb-4 opacity-50">
-           <div className="flex items-center justify-center gap-4 grayscale opacity-70">
-              <span className="text-[10px] font-black uppercase tracking-tighter">Google</span>
-              <span className="text-[10px] font-black uppercase tracking-tighter">Amazon</span>
-              <span className="text-[10px] font-black uppercase tracking-tighter">Vercel</span>
-           </div>
-           <p className="text-[9px] font-black uppercase text-slate-400 mt-4 tracking-[0.2em]">© 2026 PrimeJobs Ecosystem</p>
+        {/* MOBILE FOOTER (Minimalist) */}
+        <div className="lg:hidden w-full py-8 text-center">
+           <p className="text-[9px] font-black uppercase text-slate-400 tracking-[0.4em] opacity-40">© 2026 PrimeJobs Ecosystem</p>
         </div>
       </div>
     </div>
@@ -174,7 +167,7 @@ export function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex bg-white font-['Outfit']">
+    <div className="min-h-screen flex bg-white dark:bg-[#05070a] font-['Outfit'] relative overflow-hidden">
       
       {/* Left Panel - Brand / Visual */}
       <div className="hidden lg:flex lg:w-1/2 relative bg-slate-950 overflow-hidden flex-col justify-center p-16">
@@ -196,32 +189,13 @@ export function SignupPage() {
             Start building your <br/>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-400">dream team today.</span>
           </motion.h2>
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
-            className="space-y-6 pt-4"
-          >
-             <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0 text-sm shadow-inner">✓</div>
-                <div>
-                   <h4 className="text-white font-bold">100% Free for Candidates</h4>
-                   <p className="text-slate-400 text-sm mt-1 font-medium leading-relaxed">Apply to unlimited jobs with zero hidden fees.</p>
-                </div>
-             </div>
-             <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 flex-shrink-0 text-sm shadow-inner">✓</div>
-                <div>
-                   <h4 className="text-white font-bold">Advanced AI Matching</h4>
-                   <p className="text-slate-400 text-sm mt-1 font-medium leading-relaxed">Our algorithms connect the right talent to the right roles instantly.</p>
-                </div>
-             </div>
-          </motion.div>
         </div>
       </div>
 
-      {/* Right Panel - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 md:p-24 relative bg-white">
+      {/* Right Panel - Form (Enhanced) */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 md:p-24 relative bg-white dark:bg-[#05070a]">
         
-        <Link to="/" className="lg:hidden absolute top-8 left-8 flex items-center gap-2 no-underline text-slate-900">
+        <Link to="/" className="lg:hidden absolute top-8 left-8 flex items-center gap-2 no-underline text-slate-900 dark:text-white">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-black text-white shadow-md">J</div>
           <span className="text-xl font-black tracking-tight">PrimeJobs</span>
         </Link>
@@ -231,20 +205,18 @@ export function SignupPage() {
           className="w-full max-w-[400px] space-y-8"
         >
           <div className="space-y-2">
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight">Create Account</h1>
-            <p className="text-slate-500 font-medium text-sm">Join the platform to unlock your potential.</p>
+            <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Create Account</h1>
+            <p className="text-slate-500 dark:text-slate-400 font-medium text-sm">Join the platform to unlock your potential.</p>
           </div>
 
           {apiErr && (
-            <div className="bg-rose-50 border border-rose-100 text-rose-600 text-sm font-bold px-4 py-3 rounded-xl flex items-center gap-2">
-              <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" /></svg>
+            <div className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 text-rose-600 dark:text-rose-400 text-xs font-bold px-4 py-3 rounded-xl flex items-center gap-2">
               {apiErr}
             </div>
           )}
 
           {success && (
-            <div className="bg-emerald-50 border border-emerald-100 text-emerald-600 text-sm font-bold px-4 py-3 rounded-xl flex items-center gap-2">
-              <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 010 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+            <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold px-4 py-3 rounded-xl flex items-center gap-2">
               Account created! Redirecting to login...
             </div>
           )}
@@ -252,38 +224,38 @@ export function SignupPage() {
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-5">
                <div className="space-y-1.5">
-                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Full Name</label>
+                  <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Full Name</label>
                   <input 
                     type="text" required
-                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-slate-900 outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 transition-all font-semibold shadow-sm"
+                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white outline-none focus:border-blue-600 transition-all font-semibold shadow-sm"
                     value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})}
                     placeholder="John Doe"
                   />
                </div>
                <div className="space-y-1.5">
-                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Email Address</label>
+                  <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Email Address</label>
                   <input 
                     type="email" required
-                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-slate-900 outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 transition-all font-semibold shadow-sm"
+                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white outline-none focus:border-blue-600 transition-all font-semibold shadow-sm"
                     value={form.email} onChange={e => setForm({...form, email: e.target.value})}
                     placeholder="name@company.com"
                   />
                </div>
                <div className="space-y-1.5">
-                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Phone Number</label>
+                  <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Phone Number</label>
                   <input 
                     type="tel"
-                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-slate-900 outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 transition-all font-semibold shadow-sm"
+                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white outline-none focus:border-blue-600 transition-all font-semibold shadow-sm"
                     value={form.phone} onChange={e => setForm({...form, phone: e.target.value})}
                     placeholder="+91 00000 00000"
                   />
                </div>
                <div className="space-y-1.5">
-                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Password</label>
+                  <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Password</label>
                   <div className="relative">
                     <input 
                       type={showPassword ? "text" : "password"} required
-                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-slate-900 outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 transition-all font-semibold shadow-sm"
+                      className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white outline-none focus:border-blue-600 transition-all font-semibold shadow-sm"
                       value={form.password} onChange={e => setForm({...form, password: e.target.value})}
                       placeholder="••••••••"
                     />
@@ -298,19 +270,19 @@ export function SignupPage() {
                </div>
 
                <div className="space-y-2 pt-2">
-                 <label className="text-xs font-black text-slate-400 uppercase tracking-widest">I am a...</label>
-                 <div className="flex p-1.5 bg-slate-50 border border-slate-100 rounded-xl">
+                 <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">I am a...</label>
+                 <div className="flex p-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl">
                    <button 
                      type="button" 
                      onClick={() => setForm({...form, role: 'CANDIDATE'})} 
-                     className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${form.role === 'CANDIDATE' ? 'bg-white shadow-md text-blue-600 border border-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}
+                     className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${form.role === 'CANDIDATE' ? 'bg-white dark:bg-slate-800 shadow-md text-blue-600 border border-slate-200/10' : 'text-slate-500 hover:text-slate-700'}`}
                    >
                      Candidate
                    </button>
                    <button 
                      type="button" 
                      onClick={() => setForm({...form, role: 'COMPANY'})} 
-                     className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${form.role === 'COMPANY' ? 'bg-white shadow-md text-blue-600 border border-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}
+                     className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${form.role === 'COMPANY' ? 'bg-white dark:bg-slate-800 shadow-md text-blue-600 border border-slate-200/10' : 'text-slate-500 hover:text-slate-700'}`}
                    >
                      Employer
                    </button>
@@ -320,18 +292,13 @@ export function SignupPage() {
 
             <button 
               type="submit" disabled={loading}
-              className="w-full bg-slate-900 text-white py-4 rounded-xl font-bold text-sm shadow-xl shadow-slate-200 hover:bg-slate-800 hover:-translate-y-0.5 transition-all active:scale-[0.98] disabled:opacity-50 disabled:hover:translate-y-0 flex items-center justify-center h-[52px]"
+              className="w-full bg-slate-900 dark:bg-blue-600 text-white py-4 rounded-xl font-bold text-sm shadow-xl shadow-slate-200 dark:shadow-blue-900/20 hover:bg-slate-800 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center h-[52px]"
             >
-              {loading ? (
-                 <span className="flex items-center justify-center gap-2">
-                   <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                   Creating Account...
-                 </span>
-              ) : "Register"}
+              {loading ? "Creating Account..." : "Register"}
             </button>
           </form>
 
-          <p className="text-center text-sm font-semibold text-slate-500">
+          <p className="text-center text-sm font-semibold text-slate-500 dark:text-slate-400">
             Already have an account? <Link to="/login" className="text-blue-600 font-bold hover:underline no-underline ml-1">Log in</Link>
           </p>
         </motion.div>
