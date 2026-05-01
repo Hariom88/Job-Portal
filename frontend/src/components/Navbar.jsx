@@ -43,9 +43,9 @@ export default function Navbar() {
   );
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white/90 backdrop-blur-md border-b border-slate-200 z-50">
+    <nav className="fixed top-0 left-0 w-full bg-[var(--nav-bg)] backdrop-blur-md border-b border-slate-200 dark:border-slate-800 z-50">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 no-underline text-slate-900 group">
+        <Link to="/" className="flex items-center gap-2 no-underline text-slate-900 dark:text-white group">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold shadow-lg shadow-blue-200 group-hover:scale-110 transition-transform">J</div>
           <span className="text-xl font-extrabold tracking-tight">PrimeJobs</span>
         </Link>
@@ -105,7 +105,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-b border-slate-200 p-4 space-y-4 flex flex-col items-center overflow-hidden touch-none"
+            className="md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-4 space-y-4 flex flex-col items-center overflow-hidden touch-none"
           >
             <NavLinks />
             <div className="w-full h-px bg-slate-100"></div>
