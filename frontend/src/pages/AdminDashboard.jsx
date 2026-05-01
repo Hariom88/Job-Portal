@@ -31,11 +31,15 @@ const StatCard = ({ title, value, color, icon, delay }) => {
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
     api.get('/admin/dashboard')
       .then(res => setStats(res.data))
-      .catch(err => console.error("Admin Dashboard Error:", err))
+      .catch(err => {
+         console.error("Admin Dashboard Error:", err);
+         setErrorMsg(err.message || "Unknown error occurred");
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -45,7 +49,16 @@ export default function AdminDashboard() {
     </div>
   );
   
-  if (!stats) return <div className="p-10 text-center text-slate-400 font-bold uppercase tracking-widest py-32">Failed to load platform data.</div>;
+  if (errorMsg) return (
+    <div className="p-10 text-center py-32">
+       <div className="text-rose-600 font-bold uppercase tracking-widest mb-2">FAILED TO LOAD PLATFORM DATA</div>
+       <div className="text-slate-500 font-medium text-sm bg-rose-50 p-4 rounded-xl inline-block border border-rose-100">
+         Error: {errorMsg}
+       </div>
+    </div>
+  );
+
+  if (!stats) return <div className="p-10 text-center text-slate-400 font-bold uppercase tracking-widest py-32">Data is empty.</div>;
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 space-y-12">
