@@ -24,6 +24,7 @@ import ManageCompanies from './pages/ManageCompanies';
 import ManageJobs from './pages/ManageJobs';
 import ManageApplications from './pages/ManageApplications';
 import AdminReports from './pages/AdminReports';
+import AdminSettings from './pages/AdminSettings';
 import { LoginPage, SignupPage } from './pages/AuthPages';
 import { PostJobPage } from './pages/JobForms';
 import { ForgotPassword, ResetPassword } from './pages/PasswordReset';
@@ -79,6 +80,7 @@ function AppContent() {
                 <Route path="jobs" element={<ManageJobs />} />
                 <Route path="applications" element={<ManageApplications />} />
                 <Route path="reports" element={<AdminReports />} />
+                <Route path="settings" element={<AdminSettings />} />
               </Routes>
             </AdminLayout>
           </ProtectedRoute>

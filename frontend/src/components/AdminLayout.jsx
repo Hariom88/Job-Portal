@@ -99,14 +99,12 @@ export default function AdminLayout({ children }) {
            </div>
            <div className="flex gap-2 lg:gap-4 items-center">
               <NotificationBell />
-              <button 
-                onClick={() => {
-                  showToast('System Settings are locked by Root Admin.', 'error');
-                }}
-                className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-blue-600 transition-colors"
+              <Link 
+                to="/admin/settings"
+                className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-blue-600 transition-colors no-underline"
               >
                 ⚙️
-              </button>
+              </Link>
            </div>
         </header>
 
