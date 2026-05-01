@@ -57,7 +57,8 @@ public class InterviewService {
                 application.getCandidate().getId(),
                 "Interview Scheduled",
                 "You have an interview for " + application.getJob().getTitle() + " on " + dateStr,
-                "INFO"
+                "INFO",
+                "/dashboard"
         );
 
         // Send Email

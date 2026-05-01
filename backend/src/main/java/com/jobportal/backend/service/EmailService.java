@@ -28,4 +28,16 @@ public class EmailService {
                       "If you didn't request this, please ignore this email.";
         sendEmail(to, subject, body);
     }
+
+    public void sendInterviewInvite(String to, String candidateName, String jobTitle, String companyName, String dateStr, String meetingLink) {
+        String subject = "Interview Scheduled: " + jobTitle + " at " + companyName;
+        String body = "Hello " + candidateName + ",\n\n" +
+                      "We are pleased to inform you that an interview has been scheduled for the " + jobTitle + " position.\n\n" +
+                      "Details:\n" +
+                      "Company: " + companyName + "\n" +
+                      "Date & Time: " + dateStr + "\n" +
+                      "Meeting Link: " + meetingLink + "\n\n" +
+                      "Good luck!";
+        sendEmail(to, subject, body);
+    }
 }

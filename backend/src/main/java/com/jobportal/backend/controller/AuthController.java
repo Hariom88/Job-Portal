@@ -5,6 +5,14 @@ import com.jobportal.backend.model.User;
 import com.jobportal.backend.repository.RoleRepository;
 import com.jobportal.backend.repository.UserRepository;
 import com.jobportal.backend.util.JwtUtil;
+import com.jobportal.backend.dto.SignupRequest;
+import com.jobportal.backend.model.RefreshToken;
+import com.jobportal.backend.service.EmailService;
+import com.jobportal.backend.service.RateLimitingService;
+import com.jobportal.backend.service.RefreshTokenService;
+import io.github.bucket4j.Bucket;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,8 +22,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -40,16 +50,16 @@ public class AuthController {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private com.jobportal.backend.service.RefreshTokenService refreshTokenService;
+    private RefreshTokenService refreshTokenService;
 
     @Autowired
-    private com.jobportal.backend.service.EmailService emailService;
+    private EmailService emailService;
 
     @Autowired
-    private com.jobportal.backend.service.RateLimitingService rateLimitingService;
+    private RateLimitingService rateLimitingService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@jakarta.validation.Valid @RequestBody com.jobportal.backend.dto.SignupRequest request) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             return ResponseEntity.badRequest().body("Email already exists!");
         }
@@ -67,7 +77,7 @@ public class AuthController {
         user.setRole(role);
         String otp = String.valueOf((int) (Math.random() * 900000) + 100000);
         user.setOtpCode(otp);
-        user.setOtpExpiry(java.time.LocalDateTime.now().plusMinutes(10));
+        user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
         user.setEnabled(false); // Disabled until verified
         user.setVerified(false);
 
@@ -99,7 +109,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Invalid OTP!");
         }
 
-        if (user.getOtpExpiry().isBefore(java.time.LocalDateTime.now())) {
+        if (user.getOtpExpiry().isBefore(LocalDateTime.now())) {
             return ResponseEntity.badRequest().body("OTP has expired! Please request a new one.");
         }
 
@@ -124,7 +134,7 @@ public class AuthController {
 
         String otp = String.valueOf((int) (Math.random() * 900000) + 100000);
         user.setOtpCode(otp);
-        user.setOtpExpiry(java.time.LocalDateTime.now().plusMinutes(10));
+        user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
         userRepository.save(user);
 
         emailService.sendOtpEmail(user.getEmail(), otp);
@@ -137,9 +147,9 @@ public class AuthController {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
 
-        String token = java.util.UUID.randomUUID().toString();
+        String token = UUID.randomUUID().toString();
         user.setResetToken(token);
-        user.setResetTokenExpiry(java.time.LocalDateTime.now().plusHours(1)); // 1 hour expiry
+        user.setResetTokenExpiry(LocalDateTime.now().plusHours(1)); // 1 hour expiry
         userRepository.save(user);
 
         String resetLink = "https://job-portal-pied-rho.vercel.app/reset-password?token=" + token;
@@ -158,7 +168,7 @@ public class AuthController {
         User user = userRepository.findByResetToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid or expired reset token"));
 
-        if (user.getResetTokenExpiry().isBefore(java.time.LocalDateTime.now())) {
+        if (user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("Reset token has expired");
         }
 
@@ -171,9 +181,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> request, jakarta.servlet.http.HttpServletRequest httpRequest) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> request, HttpServletRequest httpRequest) {
         String ip = httpRequest.getRemoteAddr();
-        io.github.bucket4j.Bucket bucket = rateLimitingService.resolveBucket(ip);
+        Bucket bucket = rateLimitingService.resolveBucket(ip);
         
         if (!bucket.tryConsume(1)) {
             return ResponseEntity.status(429).body("Too many login attempts. Please try again after a minute.");
@@ -197,7 +207,7 @@ public class AuthController {
         User user = userRepository.findByEmail(request.get("email"))
                 .orElseThrow(() -> new RuntimeException("User not found after authentication"));
 
-        com.jobportal.backend.model.RefreshToken refreshToken = refreshTokenService.createRefreshToken(request.get("email"));
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(request.get("email"));
 
         Map<String, Object> response = new HashMap<>();
         response.put("token", jwt);
@@ -213,7 +223,7 @@ public class AuthController {
 
         return refreshTokenService.findByToken(requestRefreshToken)
                 .map(refreshTokenService::verifyExpiration)
-                .map(com.jobportal.backend.model.RefreshToken::getUser)
+                .map(RefreshToken::getUser)
                 .map(user -> {
                     String token = jwtUtil.generateToken(userDetailsService.loadUserByUsername(user.getEmail()));
                     Map<String, String> response = new HashMap<>();

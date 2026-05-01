@@ -51,7 +51,7 @@ public class NotificationController {
     // Testing endpoint (Should be protected or removed in prod)
     @PostMapping("/test-send/{userId}")
     public ResponseEntity<?> testSendNotification(@PathVariable Long userId, @RequestParam String message) {
-        notificationService.sendNotification(userId, "Test Alert", message, "INFO");
+        notificationService.sendNotification(userId, "Test Alert", message, "INFO", "/");
         return ResponseEntity.ok("Sent");
     }
 }
