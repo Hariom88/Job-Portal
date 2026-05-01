@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { jobService, searchService } from '../services/api';
+import { useDebounce } from '../hooks/useHooks';
 import { motion } from 'framer-motion';
+import { JobSkeleton } from '../components/Skeleton';
 
 const JOB_TYPES = ['All', 'FULL_TIME', 'PART_TIME', 'CONTRACT', 'REMOTE', 'INTERNSHIP'];
 
@@ -36,6 +38,10 @@ export default function Home() {
   const [activeType, setActiveType] = useState('All');
   const [viewLayout, setViewLayout] = useState('grid');
 
+  const debouncedSearch = useDebounce(searchTerm, 500);
+  const debouncedLocation = useDebounce(location, 500);
+  const debouncedMinSalary = useDebounce(minSalary, 500);
+
   const fetchJobs = async () => {
     setLoading(true);
     try {
@@ -57,7 +63,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchJobs();
-  }, [searchTerm, location, minSalary]);
+  }, [debouncedSearch, debouncedLocation, debouncedMinSalary]);
 
   const filteredJobs = jobs.filter(job => {
     const matchType = activeType === 'All' || job.jobType === activeType;
@@ -185,17 +191,7 @@ export default function Home() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white rounded-3xl p-8 border border-slate-100 animate-pulse space-y-4">
-                <div className="flex gap-4">
-                  <div className="w-14 h-14 bg-slate-100 rounded-2xl" />
-                  <div className="space-y-2 flex-1">
-                    <div className="h-4 bg-slate-100 rounded-lg w-3/4" />
-                    <div className="h-3 bg-slate-100 rounded-lg w-1/2" />
-                  </div>
-                </div>
-                <div className="h-5 bg-slate-100 rounded-lg" />
-                <div className="h-3 bg-slate-100 rounded-lg w-1/3" />
-              </div>
+              <JobSkeleton key={i} />
             ))}
           </div>
         ) : filteredJobs.length === 0 ? (

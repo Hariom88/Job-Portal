@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 /**
  * Simple toast hook. Returns an array of toasts and helpers.
@@ -43,4 +43,23 @@ export function useAsync() {
   }, []);
 
   return { loading, error, run };
+}
+
+/**
+ * Debounce hook to delay state updates.
+ */
+export function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
 }

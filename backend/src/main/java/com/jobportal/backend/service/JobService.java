@@ -12,6 +12,7 @@ public class JobService {
     @Autowired
     private JobRepository jobRepository;
 
+    @org.springframework.cache.annotation.Cacheable(value = "jobs")
     public List<Job> getAllJobs() {
         return jobRepository.findAll();
     }
@@ -20,6 +21,7 @@ public class JobService {
         return jobRepository.findByCompanyId(companyId);
     }
 
+    @org.springframework.cache.annotation.CacheEvict(value = "jobs", allEntries = true)
     public Job postJob(Job job) {
         return jobRepository.save(job);
     }
