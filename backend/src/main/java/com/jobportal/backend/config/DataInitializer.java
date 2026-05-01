@@ -29,22 +29,23 @@ public class DataInitializer implements CommandLineRunner {
         initRole("CANDIDATE");
 
         // 2. Initialize Default Admin
-        User admin = userRepository.findByEmail("admin@jobportal.com").orElse(new User());
+        User admin = userRepository.findByEmail("hariomdubey906@gmail.com").orElse(new User());
         if (admin.getEmail() == null) {
             Role adminRole = roleRepository.findByName("ADMIN")
                     .orElseThrow(() -> new RuntimeException("Error: Role ADMIN is not found."));
-            admin.setFullName("Super Admin");
-            admin.setEmail("admin@jobportal.com");
+            admin.setFullName("Hariom Dubey");
+            admin.setEmail("hariomdubey906@gmail.com");
             admin.setRole(adminRole);
-            admin.setPhone("0000000000");
+            admin.setPhone("8874000000");
             admin.setEnabled(true);
+            admin.setVerified(true);
         }
         // Always reset password and ensure enabled
         admin.setEnabled(true);
-        admin.setPassword(passwordEncoder.encode("admin123"));
+        admin.setPassword(passwordEncoder.encode("Hariom@8874"));
         userRepository.save(admin);
 
-        System.out.println("✅ ADMIN ACCOUNT READY: admin@jobportal.com / admin123");
+        System.out.println("✅ ADMIN ACCOUNT READY: hariomdubey906@gmail.com / Hariom@8874");
     }
 
     private void initRole(String roleName) {
