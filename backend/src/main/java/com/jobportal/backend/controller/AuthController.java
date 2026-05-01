@@ -10,6 +10,7 @@ import com.jobportal.backend.model.RefreshToken;
 import com.jobportal.backend.service.EmailService;
 import com.jobportal.backend.service.RateLimitingService;
 import com.jobportal.backend.service.RefreshTokenService;
+import com.jobportal.backend.service.SmsService;
 import io.github.bucket4j.Bucket;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -58,6 +59,9 @@ public class AuthController {
     @Autowired
     private RateLimitingService rateLimitingService;
 
+    @Autowired
+    private SmsService smsService;
+
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest request) {
         java.util.Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
@@ -97,6 +101,9 @@ public class AuthController {
         
         try {
             emailService.sendOtpEmail(user.getEmail(), otp);
+            if (user.getPhone() != null && !user.getPhone().isEmpty()) {
+                smsService.sendOtp(user.getPhone(), otp);
+            }
         } catch (Exception e) {
             // Log error but don't fail registration
             System.err.println("Failed to send OTP email: " + e.getMessage());
@@ -150,7 +157,10 @@ public class AuthController {
         userRepository.save(user);
 
         emailService.sendOtpEmail(user.getEmail(), otp);
-        return ResponseEntity.ok("New OTP has been sent to your email.");
+        if (user.getPhone() != null && !user.getPhone().isEmpty()) {
+            smsService.sendOtp(user.getPhone(), otp);
+        }
+        return ResponseEntity.ok("New OTP has been sent to your email and phone.");
     }
 
     @PostMapping("/forgot-password")
