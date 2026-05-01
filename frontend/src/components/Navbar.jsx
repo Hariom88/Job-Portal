@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NotificationBell from './NotificationBell';
 import { useTheme } from '../context/ThemeContext';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar() {
   const { user, logout, isAdmin, isCompany, isCandidate, dashboardPath } = useAuth();
@@ -90,20 +91,35 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu Content */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-white border-b border-slate-200 p-4 space-y-4 flex flex-col items-center animate-in slide-in-from-top duration-300">
-          <NavLinks />
-          <div className="w-full h-px bg-slate-100"></div>
-          {user ? (
-            <button onClick={handleLogout} className="w-full py-4 rounded-2xl bg-rose-50 text-rose-600 font-black text-xs uppercase tracking-widest">Log Out</button>
-          ) : (
-            <>
-              <Link to="/login" onClick={() => setIsMenuOpen(false)} className="w-full py-4 text-center font-black text-slate-600 uppercase text-xs">Log In</Link>
-              <Link to="/signup" onClick={() => setIsMenuOpen(false)} className="w-full py-4 text-center bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-100">Signup</Link>
-            </>
-          )}
-        </div>
-      )}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div 
+            drag="y"
+            dragConstraints={{ top: 0, bottom: 500 }}
+            onDragEnd={(e, { offset, velocity }) => {
+              if (offset.y > 100 || velocity.y > 500) {
+                setIsMenuOpen(false);
+              }
+            }}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white border-b border-slate-200 p-4 space-y-4 flex flex-col items-center overflow-hidden touch-none"
+          >
+            <NavLinks />
+            <div className="w-full h-px bg-slate-100"></div>
+            {user ? (
+              <button onClick={handleLogout} className="w-full py-4 rounded-2xl bg-rose-50 text-rose-600 font-black text-xs uppercase tracking-widest">Log Out</button>
+            ) : (
+              <>
+                <Link to="/login" onClick={() => setIsMenuOpen(false)} className="w-full py-4 text-center font-black text-slate-600 uppercase text-xs">Log In</Link>
+                <Link to="/signup" onClick={() => setIsMenuOpen(false)} className="w-full py-4 text-center bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-100">Signup</Link>
+              </>
+            )}
+            <div className="w-8 h-1.5 bg-slate-200 rounded-full mx-auto mt-2 opacity-50"></div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }

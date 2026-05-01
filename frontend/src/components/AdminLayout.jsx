@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NotificationBell from './NotificationBell';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '../hooks/useHooks';
 import { ToastContainer } from '../components/UI';
 import { useTheme } from '../context/ThemeContext';
@@ -35,19 +36,38 @@ export default function AdminLayout({ children }) {
   return (
     <div className="flex min-h-screen bg-slate-50 font-['Outfit'] relative overflow-x-hidden">
       {/* MOBILE OVERLAY */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 lg:hidden transition-opacity"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 lg:hidden"
+            onClick={() => setIsOpen(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* SIDEBAR */}
-      <aside className={`
-        fixed lg:sticky top-0 left-0 h-screen bg-white border-r border-slate-200 flex flex-col z-50 transition-transform duration-300
-        w-72 lg:w-80
-        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      `}>
+      <motion.aside 
+        drag="x"
+        dragConstraints={{ left: -300, right: 0 }}
+        dragElastic={0.1}
+        onDragEnd={(e, { offset, velocity }) => {
+          if (offset.x < -100 || velocity.x < -500) {
+            setIsOpen(false);
+          }
+        }}
+        animate={{ 
+          x: isOpen ? 0 : (window.innerWidth < 1024 ? -300 : 0) 
+        }}
+        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+        className={`
+          fixed lg:sticky top-0 left-0 h-screen bg-white border-r border-slate-200 flex flex-col z-50
+          w-72 lg:w-80 touch-none
+          ${!isOpen && 'pointer-events-none lg:pointer-events-auto'}
+        `}
+      >
         <div className="p-6 lg:p-8 pb-12 flex items-center justify-between lg:justify-start gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-200">J</div>
@@ -80,7 +100,7 @@ export default function AdminLayout({ children }) {
              Log Out
            </button>
         </div>
-      </aside>
+      </motion.aside>
 
       {/* MAIN CONTENT AREA */}
       <main className="flex-1 min-w-0 overflow-y-auto">
