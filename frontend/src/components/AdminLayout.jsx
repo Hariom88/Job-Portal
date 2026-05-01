@@ -1,6 +1,9 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import NotificationBell from './NotificationBell';
+import { useToast } from '../hooks/useHooks';
+import { ToastContainer } from '../components/UI';
 
 const SidebarItem = ({ to, label, icon, active }) => (
   <Link 
@@ -20,6 +23,7 @@ export default function AdminLayout({ children }) {
   const location = useLocation();
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = React.useState(false);
+  const { toasts, showToast } = useToast(); // Using local toast state just for layout
 
   // Close sidebar when route changes on mobile
   React.useEffect(() => {
@@ -93,9 +97,16 @@ export default function AdminLayout({ children }) {
                 <span className="text-slate-900 font-bold text-[10px] lg:text-xs uppercase tracking-widest">{location.pathname.split('/').pop() || 'Dashboard'}</span>
               </div>
            </div>
-           <div className="flex gap-2 lg:gap-4">
-              <button className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-blue-600 transition-colors">🔔</button>
-              <button className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-blue-600 transition-colors">⚙️</button>
+           <div className="flex gap-2 lg:gap-4 items-center">
+              <NotificationBell />
+              <button 
+                onClick={() => {
+                  showToast('System Settings are locked by Root Admin.', 'error');
+                }}
+                className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-blue-600 transition-colors"
+              >
+                ⚙️
+              </button>
            </div>
         </header>
 
@@ -103,6 +114,9 @@ export default function AdminLayout({ children }) {
           {children}
         </div>
       </main>
+
+      {/* Render local toasts for the layout actions */}
+      <ToastContainer toasts={toasts} />
     </div>
   );
 }
