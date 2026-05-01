@@ -41,7 +41,7 @@ export function LoginPage() {
   return (
     <div className="min-h-screen flex bg-white font-['Outfit']">
       {/* Left Panel - Brand / Visual */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-slate-950 overflow-hidden flex-col justify-between p-16">
+      <div className="hidden lg:flex lg:w-1/2 relative bg-slate-950 overflow-hidden flex-col justify-center p-16">
         {/* Abstract Background Elements */}
         <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-600/30 rounded-full blur-[120px] mix-blend-screen pointer-events-none"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-600/30 rounded-full blur-[120px] mix-blend-screen pointer-events-none"></div>
@@ -49,8 +49,8 @@ export function LoginPage() {
         {/* Grid Overlay */}
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#ffffff 1px,transparent 1px),linear-gradient(90deg,#ffffff 1px,transparent 1px)', backgroundSize: '40px 40px' }}></div>
 
-        {/* Brand */}
-        <Link to="/" className="relative z-10 flex items-center gap-3 no-underline text-white">
+        {/* Brand - Fixed top */}
+        <Link to="/" className="absolute top-16 left-16 z-10 flex items-center gap-3 no-underline text-white">
           <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-xl shadow-lg shadow-blue-500/30">J</div>
           <span className="text-2xl font-black tracking-tight">PrimeJobs</span>
         </Link>
@@ -196,12 +196,13 @@ export function SignupPage() {
     <div className="min-h-screen flex bg-white font-['Outfit']">
       
       {/* Left Panel - Brand / Visual */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-slate-950 overflow-hidden flex-col justify-between p-16">
+      <div className="hidden lg:flex lg:w-1/2 relative bg-slate-950 overflow-hidden flex-col justify-center p-16">
         <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-emerald-600/30 rounded-full blur-[120px] mix-blend-screen pointer-events-none"></div>
         <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-600/30 rounded-full blur-[120px] mix-blend-screen pointer-events-none"></div>
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
 
-        <Link to="/" className="relative z-10 flex items-center gap-3 no-underline text-white">
+        {/* Brand - Fixed top */}
+        <Link to="/" className="absolute top-16 left-16 z-10 flex items-center gap-3 no-underline text-white">
           <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-xl shadow-lg shadow-blue-500/30">J</div>
           <span className="text-2xl font-black tracking-tight">PrimeJobs</span>
         </Link>
