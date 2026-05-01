@@ -12,6 +12,7 @@ export default function ProfilePage() {
     fullName: '', phone: '', bio: '', profilePicture: '', 
     skills: '', experience: '', education: '' 
   });
+  const [activeTab, setActiveTab] = useState('personal');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -116,60 +117,85 @@ export default function ProfilePage() {
                <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2">Manage your professional digital record</p>
             </div>
 
+            <div className="mb-8 flex overflow-x-auto scrollbar-hide border-b border-slate-100 gap-6">
+              {['personal', 'professional', 'education'].map((t) => (
+                <button 
+                  key={t}
+                  type="button"
+                  onClick={() => setActiveTab(t)}
+                  className={`pb-4 text-xs font-black uppercase tracking-widest transition-colors whitespace-nowrap ${
+                    activeTab === t ? 'text-blue-600 border-b-2 border-blue-600' : 'text-slate-400 hover:text-slate-600'
+                  }`}
+                >
+                  {t === 'personal' ? 'Personal Details' : t === 'professional' ? 'Skills & Experience' : 'Education'}
+                </button>
+              ))}
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-10">
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Contact Phone</label>
-                    <input 
-                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
-                      value={form.phone} onChange={e => setForm({...form, phone: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Identity</label>
-                    <input 
-                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
-                      value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})}
-                    />
-                  </div>
-               </div>
+               {activeTab === 'personal' && (
+                 <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Identity</label>
+                        <input 
+                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
+                          value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Contact Phone</label>
+                        <input 
+                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
+                          value={form.phone} onChange={e => setForm({...form, phone: e.target.value})}
+                        />
+                      </div>
+                   </div>
+                   <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Bio Description</label>
+                      <textarea 
+                        rows="3"
+                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
+                        value={form.bio} onChange={e => setForm({...form, bio: e.target.value})}
+                      />
+                   </div>
+                 </motion.div>
+               )}
 
-               <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Bio Description</label>
-                  <textarea 
-                    rows="3"
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
-                    value={form.bio} onChange={e => setForm({...form, bio: e.target.value})}
-                  />
-               </div>
+               {activeTab === 'professional' && (
+                 <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
+                   <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Expertise & Skills</label>
+                      <textarea 
+                        rows="3"
+                        placeholder="E.g. React, Java, UI Design..."
+                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
+                        value={form.skills} onChange={e => setForm({...form, skills: e.target.value})}
+                      />
+                   </div>
+                   <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Experience Journey</label>
+                      <textarea 
+                        rows="4"
+                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
+                        value={form.experience} onChange={e => setForm({...form, experience: e.target.value})}
+                      />
+                   </div>
+                 </motion.div>
+               )}
 
-               <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Expertise & Skills</label>
-                  <textarea 
-                    rows="2"
-                    placeholder="E.g. React, Java, UI Design..."
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
-                    value={form.skills} onChange={e => setForm({...form, skills: e.target.value})}
-                  />
-               </div>
-
-               <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Experience Journey</label>
-                  <textarea 
-                    rows="2"
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
-                    value={form.experience} onChange={e => setForm({...form, experience: e.target.value})}
-                  />
-               </div>
-
-               <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Education Background</label>
-                  <textarea 
-                    rows="2"
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
-                    value={form.education} onChange={e => setForm({...form, education: e.target.value})}
-                  />
-               </div>
+               {activeTab === 'education' && (
+                 <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
+                   <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Education Background</label>
+                      <textarea 
+                        rows="5"
+                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-600 transition-all"
+                        value={form.education} onChange={e => setForm({...form, education: e.target.value})}
+                      />
+                   </div>
+                 </motion.div>
+               )}
 
                <div className="pt-6">
                   <button 

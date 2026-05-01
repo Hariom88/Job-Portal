@@ -34,6 +34,7 @@ export default function Home() {
   const [location, setLocation] = useState('');
   const [minSalary, setMinSalary] = useState('');
   const [activeType, setActiveType] = useState('All');
+  const [viewLayout, setViewLayout] = useState('grid');
 
   const fetchJobs = async () => {
     setLoading(true);
@@ -155,7 +156,7 @@ export default function Home() {
 
       {/* ── Job Listings ── */}
       <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="flex items-center justify-between mb-10">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
           <div>
             <h2 className="text-3xl font-black text-slate-900">
               {searchTerm ? `Results for "${searchTerm}"` : 'Featured Opportunities'}
@@ -164,11 +165,21 @@ export default function Home() {
               {filteredJobs.length} position{filteredJobs.length !== 1 ? 's' : ''} available
             </p>
           </div>
-          {user && (
-            <Link to="/dashboard" className="text-blue-600 text-sm font-bold hover:underline no-underline">
-              My Dashboard →
-            </Link>
-          )}
+          <div className="flex items-center gap-4">
+             <div className="bg-white border border-slate-200 rounded-xl p-1 flex items-center gap-1">
+                <button onClick={() => setViewLayout('grid')} className={`p-2 rounded-lg transition-colors ${viewLayout === 'grid' ? 'bg-slate-100 text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}>
+                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                </button>
+                <button onClick={() => setViewLayout('list')} className={`p-2 rounded-lg transition-colors ${viewLayout === 'list' ? 'bg-slate-100 text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}>
+                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" /></svg>
+                </button>
+             </div>
+            {user && (
+              <Link to="/dashboard" className="text-blue-600 text-sm font-bold hover:underline no-underline whitespace-nowrap">
+                My Dashboard →
+              </Link>
+            )}
+          </div>
         </div>
 
         {loading ? (
@@ -196,16 +207,16 @@ export default function Home() {
               className="mt-2 text-blue-600 font-bold hover:underline">Clear filters</button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className={viewLayout === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "flex flex-col gap-4"}>
             {filteredJobs.map((job, idx) => (
               <motion.div key={job.id}
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.04 }}>
                 <Link to={`/job/${job.id}`}
-                  className="group flex flex-col h-full bg-white rounded-3xl border border-slate-100 p-8 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-600/5 transition-all duration-300 no-underline">
+                  className={`group bg-white rounded-3xl border border-slate-100 p-8 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-600/5 transition-all duration-300 no-underline ${viewLayout === 'grid' ? 'flex flex-col h-full' : 'flex flex-col md:flex-row md:items-center gap-6'}`}>
                   
                   {/* Company Header */}
-                  <div className="flex items-center gap-4 mb-5">
+                  <div className={`flex items-center gap-4 ${viewLayout === 'grid' ? 'mb-5' : 'w-full md:w-1/3'}`}>
                     <div className="w-14 h-14 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 group-hover:scale-105 transition-transform">
                       🏢
                     </div>
@@ -217,34 +228,39 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Job Title */}
-                  <h3 className="text-lg font-black text-slate-900 mb-3 group-hover:text-blue-600 transition-colors leading-tight line-clamp-2">
-                    {job.title}
-                  </h3>
+                  {/* Details */}
+                  <div className={`flex-1 ${viewLayout === 'list' ? 'flex flex-col md:flex-row md:items-center justify-between gap-4 w-full' : ''}`}>
+                    <div className={viewLayout === 'list' ? 'flex-1' : ''}>
+                      {/* Job Title */}
+                      <h3 className={`font-black text-slate-900 group-hover:text-blue-600 transition-colors leading-tight line-clamp-2 ${viewLayout === 'grid' ? 'text-lg mb-3' : 'text-xl mb-2'}`}>
+                        {job.title}
+                      </h3>
 
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-2 mb-auto pb-6">
-                    <span className={`px-3 py-1 rounded-full text-[11px] font-bold border ${typeColor(job.jobType)}`}>
-                      {typeLabel(job.jobType)}
-                    </span>
-                    {job.experienceRequired > 0 && (
-                      <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-slate-50 text-slate-500 border border-slate-100">
-                        {job.experienceRequired}+ yrs exp
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Footer */}
-                  <div className="pt-5 border-t border-slate-50 flex items-center justify-between">
-                    <div>
-                      <div className="text-slate-900 font-black text-sm">
-                        ₹{(job.salaryMin / 100000).toFixed(1)}L – ₹{(job.salaryMax / 100000).toFixed(1)}L
+                      {/* Tags */}
+                      <div className={`flex flex-wrap gap-2 ${viewLayout === 'grid' ? 'mb-auto pb-6' : ''}`}>
+                        <span className={`px-3 py-1 rounded-full text-[11px] font-bold border ${typeColor(job.jobType)}`}>
+                          {typeLabel(job.jobType)}
+                        </span>
+                        {job.experienceRequired > 0 && (
+                          <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-slate-50 text-slate-500 border border-slate-100">
+                            {job.experienceRequired}+ yrs exp
+                          </span>
+                        )}
                       </div>
-                      <div className="text-slate-400 text-xs font-medium">Per annum</div>
                     </div>
-                    <span className="text-blue-600 font-bold text-sm group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                      Apply <span>→</span>
-                    </span>
+
+                    {/* Footer / Salary */}
+                    <div className={`pt-5 border-slate-50 flex items-center justify-between ${viewLayout === 'grid' ? 'border-t' : 'md:pt-0 flex-shrink-0 md:text-right md:flex-col md:items-end gap-2'}`}>
+                      <div>
+                        <div className="text-slate-900 font-black text-sm">
+                          ₹{(job.salaryMin / 100000).toFixed(1)}L – ₹{(job.salaryMax / 100000).toFixed(1)}L
+                        </div>
+                        <div className="text-slate-400 text-xs font-medium">Per annum</div>
+                      </div>
+                      <span className={`text-blue-600 font-bold text-sm group-hover:translate-x-1 transition-transform flex items-center gap-1 ${viewLayout === 'list' ? 'md:hidden' : ''}`}>
+                        Apply <span>→</span>
+                      </span>
+                    </div>
                   </div>
                 </Link>
               </motion.div>
