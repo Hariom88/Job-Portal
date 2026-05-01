@@ -38,7 +38,8 @@ export default function AdminDashboard() {
       .then(res => setStats(res.data))
       .catch(err => {
          console.error("Admin Dashboard Error:", err);
-         setErrorMsg(err.message || "Unknown error occurred");
+         const serverMsg = err.response?.data;
+         setErrorMsg(typeof serverMsg === 'string' ? serverMsg : (err.message || "Unknown error occurred"));
       })
       .finally(() => setLoading(false));
   }, []);

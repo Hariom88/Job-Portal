@@ -33,16 +33,21 @@ public class AdminController {
     @Autowired private JobApplicationRepository jobApplicationRepository;
 
     @GetMapping("/dashboard")
-    public ResponseEntity<AdminStatsDTO> getDashboardStats() {
-        AdminStatsDTO stats = new AdminStatsDTO(
-            userRepository.count(),
-            jobRepository.count(),
-            companyRepository.count(),
-            jobApplicationRepository.count(),
-            userRepository.findTop5ByOrderByCreatedAtDesc(),
-            jobRepository.findTop5ByOrderByCreatedAtDesc()
-        );
-        return ResponseEntity.ok(stats);
+    public ResponseEntity<?> getDashboardStats() {
+        try {
+            AdminStatsDTO stats = new AdminStatsDTO(
+                userRepository.count(),
+                jobRepository.count(),
+                companyRepository.count(),
+                jobApplicationRepository.count(),
+                userRepository.findTop5ByOrderByCreatedAtDesc(),
+                jobRepository.findTop5ByOrderByCreatedAtDesc()
+            );
+            return ResponseEntity.ok(stats);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Server Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/users")
