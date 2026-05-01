@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "http://switchback.proxy.rlwy.net:16363/api/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
