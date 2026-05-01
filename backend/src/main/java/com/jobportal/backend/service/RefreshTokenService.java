@@ -30,14 +30,12 @@ public class RefreshTokenService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
 
-        // Delete existing refresh token for this user
-        refreshTokenRepository.deleteByUser(user);
+        RefreshToken refreshToken = refreshTokenRepository.findByUser(user)
+                .orElse(new RefreshToken());
 
-        RefreshToken refreshToken = RefreshToken.builder()
-                .user(user)
-                .token(UUID.randomUUID().toString())
-                .expiryDate(Instant.now().plusMillis(604800000)) // 7 days
-                .build();
+        refreshToken.setUser(user);
+        refreshToken.setToken(UUID.randomUUID().toString());
+        refreshToken.setExpiryDate(Instant.now().plusMillis(604800000)); // 7 days
 
         return refreshTokenRepository.save(refreshToken);
     }
