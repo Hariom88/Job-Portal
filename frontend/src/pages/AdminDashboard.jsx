@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { motion } from 'framer-motion';
 
-const StatCard = ({ title, value, color, icon, delay }) => {
+const StatCard = ({ title, value, color, icon, delay, onClick }) => {
   const colors = {
     blue: "text-blue-600 bg-blue-50 border-blue-100",
     indigo: "text-indigo-600 bg-indigo-50 border-indigo-100",
@@ -15,14 +16,18 @@ const StatCard = ({ title, value, color, icon, delay }) => {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay }}
-      className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all group"
+      onClick={onClick}
+      className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group cursor-pointer"
     >
       <div className="flex items-start justify-between">
         <div className="space-y-4">
-          <div className="text-slate-500 text-sm font-semibold tracking-wide">{title}</div>
+          <div className="text-slate-500 text-sm font-semibold tracking-wide group-hover:text-blue-600 transition-colors">{title}</div>
           <div className="text-4xl font-black text-slate-900">{value}</div>
         </div>
         <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${colors[color] || colors.blue} border shadow-inner group-hover:scale-110 transition-transform`}>{icon}</div>
+      </div>
+      <div className="mt-4 pt-4 border-t border-slate-50 flex items-center text-[10px] font-black text-blue-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+        View Details →
       </div>
     </motion.div>
   );
@@ -32,6 +37,7 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     api.get('/admin/dashboard')
@@ -78,10 +84,10 @@ export default function AdminDashboard() {
 
       {/* STATS GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Total Candidates" value={stats.totalUsers} color="blue" icon="👥" delay={0.1} />
-        <StatCard title="Active Listings" value={stats.totalJobs} color="indigo" icon="💼" delay={0.2} />
-        <StatCard title="Registered Companies" value={stats.totalCompanies} color="emerald" icon="🏢" delay={0.3} />
-        <StatCard title="Applications" value={stats.totalApplications} color="orange" icon="📝" delay={0.4} />
+        <StatCard title="Total Candidates" value={stats.totalUsers} color="blue" icon="👥" delay={0.1} onClick={() => navigate('/admin/users')} />
+        <StatCard title="Active Listings" value={stats.totalJobs} color="indigo" icon="💼" delay={0.2} onClick={() => navigate('/admin/jobs')} />
+        <StatCard title="Registered Companies" value={stats.totalCompanies} color="emerald" icon="🏢" delay={0.3} onClick={() => navigate('/admin/companies')} />
+        <StatCard title="Applications" value={stats.totalApplications} color="orange" icon="📝" delay={0.4} onClick={() => navigate('/admin/applications')} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
