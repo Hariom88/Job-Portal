@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -56,19 +57,40 @@ public class AdminController {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUser(@PathVariable Long id, Principal principal) {
+        User currentUser = userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new RuntimeException("Logged in user not found"));
+        
+        if (currentUser.getId().equals(id)) {
+            return ResponseEntity.badRequest().body("Error: You cannot delete your own admin account.");
+        }
+
         userService.deleteUser(id);
         return ResponseEntity.ok("User deleted successfully");
     }
 
     @PutMapping("/users/{id}/block")
-    public ResponseEntity<String> toggleBlock(@PathVariable Long id) {
+    public ResponseEntity<?> toggleBlock(@PathVariable Long id, Principal principal) {
+        User currentUser = userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new RuntimeException("Logged in user not found"));
+
+        if (currentUser.getId().equals(id)) {
+            return ResponseEntity.badRequest().body("Error: You cannot block your own admin account.");
+        }
+
         userService.toggleBlockUser(id);
         return ResponseEntity.ok("User status updated successfully");
     }
 
     @PutMapping("/users/{id}/role")
-    public ResponseEntity<String> updateRole(@PathVariable Long id, @RequestParam String role) {
+    public ResponseEntity<?> updateRole(@PathVariable Long id, @RequestParam String role, Principal principal) {
+        User currentUser = userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new RuntimeException("Logged in user not found"));
+
+        if (currentUser.getId().equals(id)) {
+            return ResponseEntity.badRequest().body("Error: You cannot change your own role. Please ask another admin.");
+        }
+
         userService.updateUserRole(id, role);
         return ResponseEntity.ok("User role updated successfully");
     }
