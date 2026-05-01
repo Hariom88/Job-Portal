@@ -174,7 +174,7 @@ public class AuthController {
         String resetLink = "https://job-portal-pied-rho.vercel.app/reset-password?token=" + token;
         emailService.sendEmail(user.getEmail(), "Password Reset Request", 
                 "To reset your password, click the link below:\n" + resetLink + "\n\n" +
-                "This link will expire in 1 hour.");
+                "This link will expire in 1 hour.", false);
 
         return ResponseEntity.ok("Password reset link has been sent to your email.");
     }
