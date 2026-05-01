@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import NotificationBell from './NotificationBell';
 import { useToast } from '../hooks/useHooks';
 import { ToastContainer } from '../components/UI';
+import { useTheme } from '../context/ThemeContext';
 
 const SidebarItem = ({ to, label, icon, active }) => (
   <Link 
@@ -22,6 +23,7 @@ const SidebarItem = ({ to, label, icon, active }) => (
 export default function AdminLayout({ children }) {
   const location = useLocation();
   const { user, logout } = useAuth();
+  const { isDarkMode, toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = React.useState(false);
   const { toasts, showToast } = useToast(); // Using local toast state just for layout
 
@@ -99,6 +101,12 @@ export default function AdminLayout({ children }) {
            </div>
            <div className="flex gap-2 lg:gap-4 items-center">
               <NotificationBell />
+              <button 
+                onClick={toggleTheme}
+                className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-blue-600 transition-colors"
+              >
+                {isDarkMode ? '☀️' : '🌙'}
+              </button>
               <Link 
                 to="/admin/settings"
                 className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-blue-600 transition-colors no-underline"

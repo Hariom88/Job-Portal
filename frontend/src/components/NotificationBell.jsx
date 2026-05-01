@@ -12,8 +12,31 @@ export default function NotificationBell() {
     }
   };
 
+  // Close on scroll or click outside
+  React.useEffect(() => {
+    if (!open) return;
+
+    const handleClose = () => setOpen(false);
+    
+    // Close on any scroll
+    window.addEventListener('scroll', handleClose, true);
+    
+    // Close on click outside
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.notification-container')) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      window.removeEventListener('scroll', handleClose, true);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [open]);
+
   return (
-    <div className="relative">
+    <div className="relative notification-container">
       <button onClick={handleOpen} className="relative p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors flex items-center justify-center">
         🔔
         {unreadCount > 0 && (
