@@ -51,15 +51,15 @@ export default function AdminLayout({ children }) {
       {/* SIDEBAR */}
       <motion.aside 
         drag="x"
-        dragConstraints={{ left: -300, right: 0 }}
-        dragElastic={0.1}
-        onDragEnd={(e, { offset, velocity }) => {
-          if (offset.x < -100 || velocity.x < -500) {
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0.05}
+        onDrag={(e, info) => {
+          if (info.offset.x < -60) {
             setIsOpen(false);
           }
         }}
         animate={{ 
-          x: isOpen ? 0 : (window.innerWidth < 1024 ? -300 : 0) 
+          x: isOpen ? 0 : (window.innerWidth < 1024 ? -320 : 0) 
         }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         className={`

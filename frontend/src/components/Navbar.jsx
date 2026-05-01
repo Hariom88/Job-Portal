@@ -95,9 +95,10 @@ export default function Navbar() {
         {isMenuOpen && (
           <motion.div 
             drag="y"
-            dragConstraints={{ top: 0, bottom: 500 }}
-            onDragEnd={(e, { offset, velocity }) => {
-              if (offset.y > 100 || velocity.y > 500) {
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={0.1}
+            onDrag={(e, info) => {
+              if (info.offset.y > 80) {
                 setIsMenuOpen(false);
               }
             }}
