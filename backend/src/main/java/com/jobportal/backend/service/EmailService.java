@@ -1,40 +1,31 @@
 package com.jobportal.backend.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class EmailService {
 
-    private final JavaMailSender mailSender;
+    @Autowired
+    private JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")
-    private String fromEmail;
-
-    public void sendInterviewInvite(String toEmail, String candidateName, String jobTitle, String companyName, String scheduledTime, String meetingLink) {
+    public void sendEmail(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(fromEmail);
-        message.setTo(toEmail);
-        message.setSubject("Interview Invitation: " + jobTitle + " at " + companyName);
-        
-        String body = String.format("Dear %s,\n\n" +
-                "Congratulations! You have been invited for an interview for the position of %s at %s.\n\n" +
-                "Date & Time: %s\n" +
-                "Meeting Link: %s\n\n" +
-                "Please make sure to join on time.\n\n" +
-                "Best regards,\nPrimeJobs Team",
-                candidateName, jobTitle, companyName, scheduledTime, meetingLink);
-
+        message.setTo(to);
+        message.setSubject(subject);
         message.setText(body);
-        
-        try {
-            mailSender.send(message);
-        } catch (Exception e) {
-            System.err.println("Failed to send email to " + toEmail + ": " + e.getMessage());
-        }
+        message.setFrom("noreply@primejobs.com");
+        mailSender.send(message);
+    }
+
+    public void sendOtpEmail(String to, String otp) {
+        String subject = "Your OTP for Account Verification";
+        String body = "Welcome to Prime Jobs!\n\n" +
+                      "Your OTP for account verification is: " + otp + "\n" +
+                      "This OTP is valid for 10 minutes.\n\n" +
+                      "If you didn't request this, please ignore this email.";
+        sendEmail(to, subject, body);
     }
 }

@@ -28,6 +28,7 @@ import { LoginPage, SignupPage } from './pages/AuthPages';
 import { PostJobPage } from './pages/JobForms';
 import { ForgotPassword, ResetPassword } from './pages/PasswordReset';
 import ProfilePage from './pages/ProfilePage';
+import VerifyOTP from './pages/VerifyOTP';
 
 // SCROLL RESTORATION
 function ScrollToTop() {
@@ -48,7 +49,7 @@ function AppContent() {
   if (loading) return null;
 
   const isInsideAdmin = pathname.startsWith('/admin');
-  const isAuthPage = ['/login', '/signup', '/forgot-password', '/reset-password'].includes(pathname);
+  const isAuthPage = ['/login', '/signup', '/verify-otp', '/forgot-password', '/reset-password'].includes(pathname);
 
   return (
     <div className={`min-h-screen font-['Outfit'] ${(!isInsideAdmin && !isAuthPage) ? 'bg-slate-50 pt-16' : 'bg-white'}`}>
@@ -62,6 +63,7 @@ function AppContent() {
         <Route path="/" element={user ? <Home /> : <Navigate to="/login" replace />} />
         <Route path="/login" element={!user ? <LoginPage /> : <Navigate to={isAdmin ? "/admin" : isCompany ? "/company" : "/dashboard"} replace />} />
         <Route path="/signup" element={!user ? <SignupPage /> : <Navigate to="/" replace />} />
+        <Route path="/verify-otp" element={<VerifyOTP />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/profile" element={<ProtectedRoute condition={!!user}><ProfilePage /></ProtectedRoute>} />

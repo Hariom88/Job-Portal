@@ -48,7 +48,17 @@ public class User {
     @JoinColumn(name = "role_id")
     private Role role;
 
-    private boolean isEnabled = true;
+    private boolean isEnabled = false;
+
+    private boolean isVerified = false;
+
+    private String otpCode;
+
+    private LocalDateTime otpExpiry;
+
+    private String resetToken;
+
+    private LocalDateTime resetTokenExpiry;
 
     private LocalDateTime createdAt;
 

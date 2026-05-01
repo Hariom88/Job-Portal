@@ -184,8 +184,8 @@ export function SignupPage() {
     try {
       await run(() => signup(form));
       setSuccess(true);
-      // Optional: navigate after delay
-      setTimeout(() => navigate('/login'), 2000);
+      // Navigate to OTP verification after account creation
+      setTimeout(() => navigate('/verify-otp', { state: { email: form.email } }), 1500);
     } catch (err) {
       const msg = err.response?.data?.message || err.response?.data;
       setApiErr(typeof msg === 'string' ? msg : 'An error occurred during registration');

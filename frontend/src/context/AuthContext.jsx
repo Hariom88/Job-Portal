@@ -21,6 +21,7 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     const { data } = await authService.login({ email, password });
     localStorage.setItem('jobportal_token', data.token);
+    localStorage.setItem('jobportal_refreshToken', data.refreshToken);
     localStorage.setItem('jobportal_user',  JSON.stringify(data.user));
     setUser(data.user);
     return data.user;
@@ -28,12 +29,14 @@ export function AuthProvider({ children }) {
 
   // ── Signup ─────────────────────────────────────────────────────────────────
   const signup = async (formData) => {
-    await authService.signup(formData);
+    const { data } = await authService.signup(formData);
+    return data; // Will contain the message about OTP
   };
 
   // ── Logout ─────────────────────────────────────────────────────────────────
   const logout = () => {
     localStorage.removeItem('jobportal_token');
+    localStorage.removeItem('jobportal_refreshToken');
     localStorage.removeItem('jobportal_user');
     setUser(null);
   };

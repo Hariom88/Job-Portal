@@ -19,15 +19,35 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ─── Response Interceptor — Handle 401 / 403 ─────────────────────────────────
+// ─── Response Interceptor — Handle 401 / 403 / Token Refresh ─────────────────
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
     const status = error?.response?.status;
-    const isAuthPath = window.location.pathname === '/login' || window.location.pathname === '/signup';
+    const isAuthPath = window.location.pathname === '/login' || window.location.pathname === '/signup' || window.location.pathname === '/verify-otp';
+
+    // If 401 and we haven't retried yet, try to refresh token
+    if (status === 401 && !originalRequest._retry && !isAuthPath) {
+      originalRequest._retry = true;
+      try {
+        const refreshToken = localStorage.getItem('jobportal_refreshToken');
+        if (refreshToken) {
+          const res = await axios.post((import.meta.env.VITE_API_BASE_URL || '/api') + '/auth/refresh', { refreshToken });
+          if (res.status === 200) {
+            localStorage.setItem('jobportal_token', res.data.token);
+            originalRequest.headers.Authorization = `Bearer ${res.data.token}`;
+            return axios(originalRequest);
+          }
+        }
+      } catch (refreshError) {
+        console.error("Token refresh failed:", refreshError);
+      }
+    }
 
     if ((status === 401 || status === 403) && !isAuthPath) {
       localStorage.removeItem('jobportal_token');
+      localStorage.removeItem('jobportal_refreshToken');
       localStorage.removeItem('jobportal_user');
       window.location.href = '/login';
     }
@@ -37,8 +57,11 @@ api.interceptors.response.use(
 
 // ─── Auth Services ────────────────────────────────────────────────────────────
 export const authService = {
-  login:  (data)   => api.post('/auth/login', data),
-  signup: (data)   => api.post('/auth/signup', data),
+  login:      (data)   => api.post('/auth/login', data),
+  signup:     (data)   => api.post('/auth/signup', data),
+  verifyOtp:  (data)   => api.post('/auth/verify-otp', data),
+  resendOtp:  (data)   => api.post('/auth/resend-otp', data),
+  refreshToken: (data) => api.post('/auth/refresh', data),
   forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
   resetPassword:  (data)  => api.post('/auth/reset-password', data),
 };
