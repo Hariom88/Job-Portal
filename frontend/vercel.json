@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "http://switchback.proxy.rlwy.net:16363/api/:path*"
+      "destination": "https://web-production-dc2cc.up.railway.app/api/:path*"
     },
     {
       "source": "/(.*)",
