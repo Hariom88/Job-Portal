@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // ─── Base Config ─────────────────────────────────────────────────────────────
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://web-production-47920.up.railway.app/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://switchback.proxy.rlwy.net:16363/api',
   timeout: 15000,
   headers: { 'Content-Type': 'application/json' },
 });
