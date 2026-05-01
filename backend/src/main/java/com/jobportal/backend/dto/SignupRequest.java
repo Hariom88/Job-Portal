@@ -12,13 +12,20 @@ public class SignupRequest {
     private String fullName;
 
     @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
+    @jakarta.validation.constraints.Pattern(
+        regexp = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$",
+        message = "Please provide a valid email address (e.g. name@example.com)"
+    )
     private String email;
 
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
 
+    @jakarta.validation.constraints.Pattern(
+        regexp = "^[0-9]{10}$",
+        message = "Phone number must be exactly 10 digits"
+    )
     private String phone;
     
     private String role;
