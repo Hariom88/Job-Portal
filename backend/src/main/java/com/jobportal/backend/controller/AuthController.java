@@ -70,14 +70,20 @@ public class AuthController {
             );
         } catch (org.springframework.security.authentication.DisabledException e) {
             return ResponseEntity.status(403).body("Account is disabled. Please contact admin.");
-        } catch (org.springframework.security.authentication.BadCredentialsException e) {
+        } catch (org.springframework.security.authentication.LockedException e) {
+            return ResponseEntity.status(403).body("Account is locked.");
+        } catch (org.springframework.security.core.AuthenticationException e) {
             return ResponseEntity.status(401).body("Invalid email or password.");
         }
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.get("email"));
         final String jwt = jwtUtil.generateToken(userDetails);
 
-        User user = userRepository.findByEmail(request.get("email")).get();
+        User user = userRepository.findByEmail(request.get("email"))
+                .orElseThrow(() -> new RuntimeException("User not found after authentication"));
+
+        // Don't send password back
+        user.setPassword(null);
 
         Map<String, Object> response = new HashMap<>();
         response.put("token", jwt);

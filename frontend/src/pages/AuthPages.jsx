@@ -32,7 +32,8 @@ export function LoginPage() {
       if (!err.response) {
         setApiErr('Server is unreachable. Please check if backend is running.');
       } else {
-        setApiErr(err?.response?.data || 'Invalid email or password');
+        const msg = err.response.data?.message || err.response.data;
+        setApiErr(typeof msg === 'string' ? msg : 'Invalid email or password');
       }
     }
   };
@@ -171,18 +172,23 @@ export function SignupPage() {
   const { loading, run } = useAsync();
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({ fullName: '', email: '', password: '', role: 'CANDIDATE' });
+  const [form, setForm] = useState({ fullName: '', email: '', password: '', phone: '', role: 'CANDIDATE' });
   const [apiErr, setApiErr] = useState('');
+  const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setApiErr('');
+    setSuccess(false);
     try {
       await run(() => signup(form));
-      navigate('/login');
+      setSuccess(true);
+      // Optional: navigate after delay
+      setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
-      setApiErr(err?.response?.data || 'An error occurred during registration');
+      const msg = err.response?.data?.message || err.response?.data;
+      setApiErr(typeof msg === 'string' ? msg : 'An error occurred during registration');
     }
   };
 
@@ -254,6 +260,13 @@ export function SignupPage() {
             </div>
           )}
 
+          {success && (
+            <div className="bg-emerald-50 border border-emerald-100 text-emerald-600 text-sm font-bold px-4 py-3 rounded-xl flex items-center gap-2">
+              <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 010 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+              Account created! Redirecting to login...
+            </div>
+          )}
+
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-5">
                <div className="space-y-1.5">
@@ -272,6 +285,15 @@ export function SignupPage() {
                     className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-slate-900 outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 transition-all font-semibold shadow-sm"
                     value={form.email} onChange={e => setForm({...form, email: e.target.value})}
                     placeholder="name@company.com"
+                  />
+               </div>
+               <div className="space-y-1.5">
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Phone Number</label>
+                  <input 
+                    type="tel"
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-slate-900 outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 transition-all font-semibold shadow-sm"
+                    value={form.phone} onChange={e => setForm({...form, phone: e.target.value})}
+                    placeholder="+91 00000 00000"
                   />
                </div>
                <div className="space-y-1.5">

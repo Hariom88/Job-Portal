@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // ─── Base Config ─────────────────────────────────────────────────────────────
 const api = axios.create({
-  baseURL: 'https://prime-job-portal-live.up.railway.app/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api',
   timeout: 15000,
   headers: { 'Content-Type': 'application/json' },
 });
@@ -22,7 +22,9 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error?.response?.status;
-    if (status === 401 || status === 403) {
+    const isAuthPath = window.location.pathname === '/login' || window.location.pathname === '/signup';
+
+    if ((status === 401 || status === 403) && !isAuthPath) {
       localStorage.removeItem('jobportal_token');
       localStorage.removeItem('jobportal_user');
       window.location.href = '/login';
