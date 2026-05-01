@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @org.springframework.cache.annotation.EnableCaching
+@org.springframework.scheduling.annotation.EnableAsync
 public class BackendApplication {
 
 	public static void main(String[] args) {
