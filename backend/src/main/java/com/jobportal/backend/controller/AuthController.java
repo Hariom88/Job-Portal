@@ -82,15 +82,13 @@ public class AuthController {
         User user = userRepository.findByEmail(request.get("email"))
                 .orElseThrow(() -> new RuntimeException("User not found after authentication"));
 
-        // Don't send password back
-        user.setPassword(null);
-
         Map<String, Object> response = new HashMap<>();
         response.put("token", jwt);
         response.put("user", user);
 
         return ResponseEntity.ok(response);
     }
+    
     @GetMapping("/reset-admin")
     public ResponseEntity<?> resetAdmin() {
         User admin = userRepository.findByEmail("admin@jobportal.com").orElse(new User());
