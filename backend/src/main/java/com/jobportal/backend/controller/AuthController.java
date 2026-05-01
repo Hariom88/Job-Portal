@@ -60,8 +60,20 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest request) {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("Email already exists!");
+        java.util.Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
+        if (existingUser.isPresent()) {
+            if (existingUser.get().isVerified()) {
+                return ResponseEntity.badRequest().body("Email already exists and is verified!");
+            } else {
+                // Resend OTP for unverified account
+                String otp = String.valueOf((int) (Math.random() * 900000) + 100000);
+                User user = existingUser.get();
+                user.setOtpCode(otp);
+                user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
+                userRepository.save(user);
+                emailService.sendOtpEmail(user.getEmail(), otp);
+                return ResponseEntity.ok("This email is already registered but not verified. A new OTP has been sent to your email.");
+            }
         }
 
         User user = new User();

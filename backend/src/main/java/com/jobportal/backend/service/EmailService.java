@@ -12,12 +12,22 @@ public class EmailService {
     private JavaMailSender mailSender;
 
     public void sendEmail(String to, String subject, String body) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(body);
-        message.setFrom("noreply@primejobs.com");
-        mailSender.send(message);
+        System.out.println("========== EMAIL SIMULATION ==========");
+        System.out.println("TO: " + to);
+        System.out.println("SUBJECT: " + subject);
+        System.out.println("BODY: " + body);
+        System.out.println("======================================");
+        
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(to);
+            message.setSubject(subject);
+            message.setText(body);
+            message.setFrom("noreply@primejobs.com");
+            mailSender.send(message);
+        } catch (Exception e) {
+            System.err.println("SMTP Error: Email could not be sent. Make sure Spring Mail properties are set.");
+        }
     }
 
     public void sendOtpEmail(String to, String otp) {
