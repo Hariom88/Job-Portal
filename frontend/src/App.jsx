@@ -48,13 +48,14 @@ function AppContent() {
   if (loading) return null;
 
   const isInsideAdmin = pathname.startsWith('/admin');
+  const isAuthPage = ['/login', '/signup', '/forgot-password', '/reset-password'].includes(pathname);
 
   return (
-    <div className={`min-h-screen font-['Outfit'] ${!isInsideAdmin ? 'bg-slate-50 pt-16' : 'bg-white'}`}>
+    <div className={`min-h-screen font-['Outfit'] ${(!isInsideAdmin && !isAuthPage) ? 'bg-slate-50 pt-16' : 'bg-white'}`}>
       <ScrollToTop />
       
-      {/* Hide global Navbar/Footer if inside Admin Panel */}
-      {!isInsideAdmin && <Navbar />}
+      {/* Hide global Navbar if inside Admin Panel or Auth Pages */}
+      {(!isInsideAdmin && !isAuthPage) && <Navbar />}
 
       <Routes>
         {/* PUBLIC ROUTES */}
@@ -91,7 +92,7 @@ function AppContent() {
         <Route path="*" element={<Navigate to={user ? "/" : "/login"} replace />} />
       </Routes>
 
-      {!isInsideAdmin && (
+      {(!isInsideAdmin && !isAuthPage) && (
         <footer className="mt-20 border-t border-slate-200 bg-white">
           <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-4 gap-12 text-center md:text-left">
             <div className="col-span-1 md:col-span-2 space-y-4">
