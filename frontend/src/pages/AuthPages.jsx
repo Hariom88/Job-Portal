@@ -210,60 +210,59 @@ export function SignupPage() {
           </div>
 
           {apiErr && (
-            <div className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 text-rose-600 dark:text-rose-400 text-xs font-bold px-4 py-3 rounded-xl flex items-center gap-2">
+            <motion.div initial={{ x: -10 }} animate={{ x: 0 }} className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 text-rose-600 dark:text-rose-400 text-xs font-bold px-4 py-3 rounded-2xl flex items-center gap-2">
+              <span className="text-sm">⚠️</span>
               {apiErr}
-            </div>
+            </motion.div>
           )}
 
           {success && (
-            <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold px-4 py-3 rounded-xl flex items-center gap-2">
-              Account created! Redirecting to login...
-            </div>
+            <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold px-4 py-3 rounded-2xl flex items-center gap-2">
+              <span className="text-sm">✅</span>
+              Registration successful! Sending OTP...
+            </motion.div>
           )}
 
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="space-y-5">
-               <div className="space-y-1.5">
-                  <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Full Name</label>
+            <div className="space-y-4">
+               <div className="group">
+                  <label className="text-[10px] font-black text-slate-400 group-focus-within:text-blue-600 transition-colors uppercase tracking-widest ml-1 mb-2 block">Full Name</label>
                   <input 
                     type="text" required
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white outline-none focus:border-blue-600 transition-all font-semibold shadow-sm"
+                    className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 rounded-2xl px-4 py-4 text-slate-900 dark:text-white outline-none focus:border-blue-600 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all font-semibold text-sm"
                     value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})}
-                    placeholder="John Doe"
+                    placeholder="Enter your full name"
                   />
                </div>
-               <div className="space-y-1.5">
-                  <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Email Address</label>
+               <div className="group">
+                  <label className="text-[10px] font-black text-slate-400 group-focus-within:text-blue-600 transition-colors uppercase tracking-widest ml-1 mb-2 block">Email Address</label>
                   <input 
                     type="email" required
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white outline-none focus:border-blue-600 transition-all font-semibold shadow-sm"
+                    className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 rounded-2xl px-4 py-4 text-slate-900 dark:text-white outline-none focus:border-blue-600 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all font-semibold text-sm"
                     value={form.email} onChange={e => setForm({...form, email: e.target.value})}
                     placeholder="name@company.com"
                   />
                </div>
-               <div className="space-y-1.5">
-                  <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Phone Number</label>
+               <div className="group">
+                  <label className="text-[10px] font-black text-slate-400 group-focus-within:text-blue-600 transition-colors uppercase tracking-widest ml-1 mb-2 block">Phone Number</label>
                   <input 
-                    type="tel"
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white outline-none focus:border-blue-600 transition-all font-semibold shadow-sm"
+                    type="tel" required
+                    className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 rounded-2xl px-4 py-4 text-slate-900 dark:text-white outline-none focus:border-blue-600 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all font-semibold text-sm"
                     value={form.phone} onChange={e => setForm({...form, phone: e.target.value})}
-                    placeholder="+91 00000 00000"
+                    placeholder="e.g. +91 9876543210"
                   />
+                  <p className="text-[9px] text-slate-400 mt-1.5 ml-1 font-medium">At least 10 digits required</p>
                </div>
-               <div className="space-y-1.5">
-                  <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Password</label>
+               <div className="group">
+                  <label className="text-[10px] font-black text-slate-400 group-focus-within:text-blue-600 transition-colors uppercase tracking-widest ml-1 mb-2 block">Create Password</label>
                   <div className="relative">
                     <input 
                       type={showPassword ? "text" : "password"} required
-                      className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white outline-none focus:border-blue-600 transition-all font-semibold shadow-sm"
+                      className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 rounded-2xl px-4 py-4 text-slate-900 dark:text-white outline-none focus:border-blue-600 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all font-semibold text-sm"
                       value={form.password} onChange={e => setForm({...form, password: e.target.value})}
-                      placeholder="••••••••"
+                      placeholder="Min. 6 characters"
                     />
-                    <button 
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 font-bold text-xs"
-                    >
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-[10px] hover:text-blue-600 transition-colors">
                       {showPassword ? "HIDE" : "SHOW"}
                     </button>
                   </div>

@@ -23,8 +23,8 @@ public class SignupRequest {
     private String password;
 
     @jakarta.validation.constraints.Pattern(
-        regexp = "^[0-9]{10}$",
-        message = "Phone number must be exactly 10 digits"
+        regexp = "^[+]?[0-9\\s-]{10,15}$",
+        message = "Please enter a valid phone number (at least 10 digits)"
     )
     private String phone;
     

@@ -27,6 +27,12 @@ api.interceptors.response.use(
     const status = error?.response?.status;
     const isAuthPath = window.location.pathname === '/login' || window.location.pathname === '/signup' || window.location.pathname === '/verify-otp';
 
+    if (!error.response) {
+      console.error("❌ NETWORK ERROR: Backend might be down or URL is wrong.");
+      // Provide a more descriptive error for the UI
+      error.message = "Server is not responding. Please check if the backend is running on Railway.";
+    }
+
     // If 401 and we haven't retried yet, try to refresh token
     if (status === 401 && !originalRequest._retry && !isAuthPath) {
       originalRequest._retry = true;
