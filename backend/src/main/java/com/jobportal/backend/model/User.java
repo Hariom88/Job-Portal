@@ -44,6 +44,10 @@ public class User {
     @Column(columnDefinition = "TEXT")
     private String education;
 
+    private String resumeUrl;
+
+    private String resumeName;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
@@ -61,6 +65,14 @@ public class User {
     private LocalDateTime resetTokenExpiry;
 
     private LocalDateTime createdAt;
+
+    @ManyToMany
+    @JoinTable(
+        name = "saved_jobs",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "job_id")
+    )
+    private java.util.Set<Job> savedJobs = new java.util.HashSet<>();
 
     @PrePersist
     protected void onCreate() {

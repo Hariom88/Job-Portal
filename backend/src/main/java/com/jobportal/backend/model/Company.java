@@ -31,5 +31,10 @@ public class Company {
     private String location;
     private String industry;
     private String status = "PENDING"; // PENDING, APPROVED, REJECTED
+    
+    private String plan = "FREE"; // FREE, PREMIUM, ENTERPRISE
+    private int jobCredits = 5; // Default 5 for free plan
+    private java.time.LocalDateTime subscriptionExpiry;
+
     private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
 }

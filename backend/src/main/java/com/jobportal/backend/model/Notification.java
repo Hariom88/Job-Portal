@@ -2,6 +2,7 @@ package com.jobportal.backend.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,32 +13,20 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Notification {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user; // The user who receives the notification
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User recipient;
 
-    @Column(nullable = false)
     private String title;
-
-    @Column(columnDefinition = "TEXT", nullable = false)
     private String message;
-
-    @Column(nullable = false)
-    private String type; // e.g., "INFO", "SUCCESS", "ALERT", "JOB_MATCH", "APP_STATUS"
-
-    @Column(nullable = false)
+    private String type; // APPLICATION_UPDATE, INTERVIEW_SCHEDULED, SYSTEM
+    private String link;
     private boolean isRead = false;
-
-    private LocalDateTime createdAt;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

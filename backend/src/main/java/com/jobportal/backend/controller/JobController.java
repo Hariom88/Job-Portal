@@ -42,14 +42,26 @@ public class JobController {
 
     @PostMapping("/post")
     @PreAuthorize("hasRole('COMPANY')")
-    public ResponseEntity<Job> postJob(@RequestBody Job job, @RequestParam Long companyId) {
+    public ResponseEntity<?> postJob(@RequestBody Job job, @RequestParam Long companyId) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
+        
+        if (company.getJobCredits() <= 0) {
+            return ResponseEntity.status(403).body("Insufficient job credits. Please upgrade your plan.");
+        }
+
         job.setCompany(company);
         if (job.getIndustry() == null || job.getIndustry().isEmpty()) {
             job.setIndustry(company.getIndustry());
         }
-        return ResponseEntity.ok(jobService.postJob(job));
+
+        Job savedJob = jobService.postJob(job);
+        
+        // Decrement credits
+        company.setJobCredits(company.getJobCredits() - 1);
+        companyRepository.save(company);
+
+        return ResponseEntity.ok(savedJob);
     }
 
     @PutMapping("/{id}")

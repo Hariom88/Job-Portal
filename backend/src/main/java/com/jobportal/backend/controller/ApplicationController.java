@@ -16,6 +16,9 @@ public class ApplicationController {
     @Autowired
     private ApplicationService applicationService;
 
+    @Autowired
+    private com.jobportal.backend.service.NotificationService notificationService;
+
     @PostMapping("/apply")
     @PreAuthorize("hasRole('CANDIDATE')")
     public ResponseEntity<JobApplication> apply(@RequestBody JobApplication application) {
@@ -37,7 +40,16 @@ public class ApplicationController {
     @PatchMapping("/{id}/status")
     @PreAuthorize("hasRole('COMPANY')")
     public ResponseEntity<String> updateStatus(@PathVariable Long id, @RequestParam JobApplication.ApplicationStatus status) {
-        applicationService.updateStatus(id, status);
+        JobApplication application = applicationService.updateStatus(id, status);
+        
+        notificationService.sendNotification(
+            application.getCandidate(),
+            "Application Update",
+            "Your application for " + application.getJob().getTitle() + " has been " + status,
+            "APPLICATION_UPDATE",
+            "/dashboard"
+        );
+
         return ResponseEntity.ok("Application marked as " + status);
     }
 }
