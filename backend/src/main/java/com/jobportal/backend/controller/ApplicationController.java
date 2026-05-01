@@ -19,6 +19,9 @@ public class ApplicationController {
     @Autowired
     private com.jobportal.backend.service.NotificationService notificationService;
 
+    @Autowired
+    private com.jobportal.backend.repository.JobApplicationRepository applicationRepository;
+
     @PostMapping("/apply")
     @PreAuthorize("hasRole('CANDIDATE')")
     public ResponseEntity<JobApplication> apply(@RequestBody JobApplication application) {
@@ -35,6 +38,32 @@ public class ApplicationController {
     @PreAuthorize("hasRole('COMPANY')")
     public List<JobApplication> getApplicationsForCompany(@PathVariable Long companyId) {
         return applicationService.getApplicationsByCompany(companyId);
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COMPANY', 'CANDIDATE', 'ADMIN')")
+    public ResponseEntity<JobApplication> getApplicationById(@PathVariable Long id, org.springframework.security.core.Authentication authentication) {
+        JobApplication application = applicationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        boolean isCompany = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_COMPANY"));
+
+        // If company views it for the first time, notify candidate
+        if (isCompany && !application.isSeen()) {
+            application.setSeen(true);
+            applicationRepository.save(application);
+
+            notificationService.sendNotification(
+                application.getCandidate(),
+                "Resume Viewed",
+                "Your resume for " + application.getJob().getTitle() + " was seen by " + application.getJob().getCompany().getName(),
+                "RESUME_VIEWED",
+                "/dashboard"
+            );
+        }
+
+        return ResponseEntity.ok(application);
     }
 
     @PatchMapping("/{id}/status")

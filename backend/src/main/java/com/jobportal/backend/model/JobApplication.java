@@ -35,6 +35,8 @@ public class JobApplication {
     @Column(columnDefinition = "TEXT")
     private String coverLetter;
 
+    private boolean isSeen = false;
+
     private LocalDateTime appliedAt;
 
     @PrePersist
