@@ -12,6 +12,9 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @org.springframework.beans.factory.annotation.Value("${spring.mail.username}")
+    private String fromEmail;
+
     public void sendEmail(String to, String subject, String body, boolean isHtml) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
@@ -20,7 +23,7 @@ public class EmailService {
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(body, isHtml);
-            helper.setFrom("PrimeJobs <noreply@primejobs.com>");
+            helper.setFrom("PrimeJobs <" + fromEmail + ">");
             
             mailSender.send(message);
             System.out.println("✅ Email sent successfully to: " + to);
