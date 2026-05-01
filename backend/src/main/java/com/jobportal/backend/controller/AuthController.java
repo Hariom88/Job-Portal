@@ -94,16 +94,14 @@ public class AuthController {
         user.setEnabled(false); 
         user.setVerified(false);
 
-        // 5. Save and Send OTP
+        // 5. Save and Send Email OTP (SMS Disabled)
         userRepository.save(user);
         
         try {
             emailService.sendOtpEmail(user.getEmail(), otp);
-            if (user.getPhone() != null && !user.getPhone().isEmpty()) {
-                smsService.sendOtp(user.getPhone(), otp);
-            }
+            // smsService.sendOtp(user.getPhone(), otp); // Disabled as per request
         } catch (Exception e) {
-            System.err.println("Failed to send OTP: " + e.getMessage());
+            System.err.println("Failed to send Email OTP: " + e.getMessage());
         }
 
         return ResponseEntity.ok("User registered successfully! Please check your email for the OTP.");
@@ -154,10 +152,8 @@ public class AuthController {
         userRepository.save(user);
 
         emailService.sendOtpEmail(user.getEmail(), otp);
-        if (user.getPhone() != null && !user.getPhone().isEmpty()) {
-            smsService.sendOtp(user.getPhone(), otp);
-        }
-        return ResponseEntity.ok("New OTP has been sent to your email and phone.");
+        // smsService.sendOtp(user.getPhone(), otp); // Disabled
+        return ResponseEntity.ok("New OTP has been sent to your email.");
     }
 
     @PostMapping("/forgot-password")
