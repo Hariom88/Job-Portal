@@ -27,8 +27,19 @@ export function LoginPage() {
     try {
       await run(() => login(form.email, form.password));
     } catch (err) {
-      const msg = err.response?.data?.message || err.response?.data;
-      setApiErr(typeof msg === 'string' ? msg : 'Invalid email or password');
+      console.error("Login Error Object:", err.response?.data);
+      let msg = "Invalid email or password";
+      
+      if (err.response?.data) {
+        const data = err.response.data;
+        if (typeof data === 'string') msg = data;
+        else if (data.message) msg = data.message;
+        else if (typeof data === 'object') msg = JSON.stringify(data);
+      } else if (err.message) {
+        msg = err.message;
+      }
+      
+      setApiErr(msg);
     }
   };
 
@@ -161,8 +172,20 @@ export function SignupPage() {
       // Navigate to OTP verification after account creation
       setTimeout(() => navigate('/verify-otp', { state: { email: form.email } }), 1500);
     } catch (err) {
-      const msg = err.response?.data?.message || err.response?.data;
-      setApiErr(typeof msg === 'string' ? msg : 'An error occurred during registration');
+      console.error("Signup Error Object:", err.response?.data);
+      let msg = "An error occurred during registration";
+      
+      if (err.response?.data) {
+        const data = err.response.data;
+        if (typeof data === 'string') msg = data;
+        else if (data.message) msg = data.message;
+        else if (data.errors && Array.isArray(data.errors)) msg = data.errors[0];
+        else if (typeof data === 'object') msg = JSON.stringify(data);
+      } else if (err.message) {
+        msg = err.message;
+      }
+      
+      setApiErr(msg);
     }
   };
 
