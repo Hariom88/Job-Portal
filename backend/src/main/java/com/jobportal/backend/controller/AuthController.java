@@ -64,22 +64,17 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest request) {
-        java.util.Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
-        if (existingUser.isPresent()) {
-            if (existingUser.get().isVerified()) {
-                return ResponseEntity.badRequest().body("Email already exists and is verified!");
-            } else {
-                // Resend OTP for unverified account
-                String otp = String.valueOf((int) (Math.random() * 900000) + 100000);
-                User user = existingUser.get();
-                user.setOtpCode(otp);
-                user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
-                userRepository.save(user);
-                emailService.sendOtpEmail(user.getEmail(), otp);
-                return ResponseEntity.ok("This email is already registered but not verified. A new OTP has been sent to your email.");
-            }
+        // 1. Check if Email already exists
+        if (userRepository.existsByEmail(request.getEmail())) {
+            return ResponseEntity.badRequest().body("Email is already registered! Please log in or use forgot password.");
         }
 
+        // 2. Check if Phone already exists
+        if (request.getPhone() != null && !request.getPhone().isEmpty() && userRepository.existsByPhone(request.getPhone())) {
+            return ResponseEntity.badRequest().body("Phone number is already registered! Please use a different number.");
+        }
+
+        // 3. Create New User
         User user = new User();
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -91,12 +86,15 @@ public class AuthController {
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new RuntimeException("Role not found: " + roleName));
         user.setRole(role);
+
+        // 4. Generate OTP
         String otp = String.valueOf((int) (Math.random() * 900000) + 100000);
         user.setOtpCode(otp);
         user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
-        user.setEnabled(false); // Disabled until verified
+        user.setEnabled(false); 
         user.setVerified(false);
 
+        // 5. Save and Send OTP
         userRepository.save(user);
         
         try {
@@ -105,8 +103,7 @@ public class AuthController {
                 smsService.sendOtp(user.getPhone(), otp);
             }
         } catch (Exception e) {
-            // Log error but don't fail registration
-            System.err.println("Failed to send OTP email: " + e.getMessage());
+            System.err.println("Failed to send OTP: " + e.getMessage());
         }
 
         return ResponseEntity.ok("User registered successfully! Please check your email for the OTP.");

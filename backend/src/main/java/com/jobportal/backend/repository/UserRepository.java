@@ -10,8 +10,10 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
+    Optional<User> findByPhone(String phone);
     Optional<User> findByResetToken(String token);
     boolean existsByEmail(String email);
+    boolean existsByPhone(String phone);
     List<User> findTop5ByOrderByCreatedAtDesc();
 
     @org.springframework.data.jpa.repository.Query("SELECT u.role.name, COUNT(u) FROM User u GROUP BY u.role.name")
