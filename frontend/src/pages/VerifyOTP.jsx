@@ -9,13 +9,40 @@ export default function VerifyOTP() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
-  const [timer, setTimer] = useState(300); // 5 minutes in seconds
+  const [timer, setTimer] = useState(600); // Default 10 minutes
   const [canResend, setCanResend] = useState(false);
   
   const navigate = useNavigate();
   const location = useLocation();
   const { toasts, showToast } = useToast();
-  const email = location.state?.email;
+  const email = location.state?.email || localStorage.getItem('pending_verify_email');
+
+  // Persist timer and email on reload
+  useEffect(() => {
+    if (email) {
+      localStorage.setItem('pending_verify_email', email);
+      
+      const storedExpiry = localStorage.getItem(`otp_expiry_${email}`);
+      const now = Date.now();
+      
+      if (storedExpiry) {
+        const remaining = Math.floor((parseInt(storedExpiry) - now) / 1000);
+        if (remaining > 0) {
+          setTimer(remaining);
+          setCanResend(false);
+        } else {
+          setTimer(0);
+          setCanResend(true);
+        }
+      } else {
+        // First time on this page for this email, set 10 min expiry
+        const expiryTime = now + 600000; // 10 minutes
+        localStorage.setItem(`otp_expiry_${email}`, expiryTime.toString());
+        setTimer(600);
+        setCanResend(false);
+      }
+    }
+  }, [email]);
 
   useEffect(() => {
     let interval;
@@ -72,6 +99,8 @@ export default function VerifyOTP() {
     try {
       await authService.verifyOtp({ email, otp: otpString });
       showToast('Account verified successfully!', 'success');
+      localStorage.removeItem('pending_verify_email');
+      localStorage.removeItem(`otp_expiry_${email}`);
       setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
       const errorMsg = typeof err.response?.data === 'string' ? err.response.data : (err.response?.data?.message || 'Invalid OTP');
@@ -87,7 +116,9 @@ export default function VerifyOTP() {
     try {
       await authService.resendOtp({ email });
       showToast('New OTP sent to your email', 'success');
-      setTimer(300);
+      const newExpiry = Date.now() + 600000;
+      localStorage.setItem(`otp_expiry_${email}`, newExpiry.toString());
+      setTimer(600);
       setCanResend(false);
       setOtp(['', '', '', '', '', '']);
     } catch (err) {
