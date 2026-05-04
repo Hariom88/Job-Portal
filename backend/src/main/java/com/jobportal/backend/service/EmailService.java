@@ -93,7 +93,7 @@ public class EmailService {
                     "<h2 style='display: inline-block; margin-left: 10px; vertical-align: middle; color: #0f172a; font-weight: 900;'>PrimeJobs</h2>" +
                 "</div>" +
                 "<h3 style='color: #0f172a; font-weight: 800;'>Verify your account</h3>" +
-                "<p style='font-size: 16px; line-height: 1.6; color: #64748b;'>Use the code below to complete your registration. This code expires in 10 minutes.</p>" +
+                "<p style='font-size: 16px; line-height: 1.6; color: #64748b;'>Use the code below to complete your registration. This code expires in 5 minutes.</p>" +
                 "<div style='background: #f8fafc; border-radius: 12px; padding: 20px; text-align: center; margin: 30px 0; border: 1px dashed #cbd5e1;'>" +
                     "<span style='font-size: 32px; font-weight: 900; letter-spacing: 10px; color: #2563eb;'>" + otp + "</span>" +
                 "</div>" +

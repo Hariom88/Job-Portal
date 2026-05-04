@@ -9,7 +9,7 @@ export default function VerifyOTP() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
-  const [timer, setTimer] = useState(600); // Default 10 minutes
+  const [timer, setTimer] = useState(300); // Default 5 minutes
   const [canResend, setCanResend] = useState(false);
   
   const navigate = useNavigate();
@@ -35,10 +35,10 @@ export default function VerifyOTP() {
           setCanResend(true);
         }
       } else {
-        // First time on this page for this email, set 10 min expiry
-        const expiryTime = now + 600000; // 10 minutes
+        // First time on this page for this email, set 5 min expiry
+        const expiryTime = now + 300000; // 5 minutes
         localStorage.setItem(`otp_expiry_${email}`, expiryTime.toString());
-        setTimer(600);
+        setTimer(300);
         setCanResend(false);
       }
     }
@@ -116,9 +116,9 @@ export default function VerifyOTP() {
     try {
       await authService.resendOtp({ email });
       showToast('New OTP sent to your email', 'success');
-      const newExpiry = Date.now() + 600000;
+      const newExpiry = Date.now() + 300000;
       localStorage.setItem(`otp_expiry_${email}`, newExpiry.toString());
-      setTimer(600);
+      setTimer(300);
       setCanResend(false);
       setOtp(['', '', '', '', '', '']);
     } catch (err) {
