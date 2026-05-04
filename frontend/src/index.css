@@ -1,7 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 @theme {
+  --font-inter: "Inter", sans-serif;
   --font-outfit: "Outfit", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply font-['Inter'] bg-slate-50 text-slate-800 antialiased selection:bg-blue-200 selection:text-blue-900;
+  }
 }
 
 :root {
@@ -31,7 +39,6 @@ html, body {
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
-  font-family: 'Outfit', sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
   -webkit-tap-highlight-color: transparent;
 }
@@ -41,7 +48,6 @@ html, body {
 }
 
 * {
-  transition: background-color 0.2s ease, border-color 0.2s ease;
   box-sizing: border-box;
 }
 
@@ -53,6 +59,24 @@ html, body {
 
 .animate-slide-up {
   animation: slideUp 0.4s ease forwards;
+}
+
+/* Premium SaaS Classes */
+@layer components {
+  .glass-panel {
+    @apply bg-white/80 backdrop-blur-xl border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)];
+  }
+  .dark .glass-panel {
+    @apply bg-slate-900/80 border-slate-800/40 shadow-none;
+  }
+  
+  .premium-shadow {
+    @apply shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1),0_10px_20px_-2px_rgba(6,81,237,0.05)];
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent;
+  }
 }
 
 /* Link Resets */
