@@ -17,6 +17,11 @@ public class EmailService {
 
     @org.springframework.scheduling.annotation.Async
     public void sendEmail(String to, String subject, String body, boolean isHtml) {
+        if (fromEmail == null || fromEmail.isEmpty() || fromEmail.equals("your-email@gmail.com")) {
+            System.err.println("❌ SMTP ERROR: spring.mail.username is not configured correctly. Current value: " + fromEmail);
+            return;
+        }
+
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -29,11 +34,12 @@ public class EmailService {
             mailSender.send(message);
             System.out.println("✅ Email sent successfully to: " + to);
         } catch (Exception e) {
-            System.err.println("❌ SMTP ERROR: " + e.getMessage());
-            // e.printStackTrace(); // Optional: log full stack trace
+            System.err.println("❌ SMTP ERROR to " + to + ": " + e.getMessage());
+            // e.printStackTrace(); 
         }
     }
 
+    @org.springframework.scheduling.annotation.Async
     public void sendOtpEmail(String to, String otp) {
         String subject = "Verify your PrimeJobs Account";
         String htmlContent = 
@@ -55,6 +61,7 @@ public class EmailService {
         sendEmail(to, subject, htmlContent, true);
     }
 
+    @org.springframework.scheduling.annotation.Async
     public void sendInterviewInvite(String to, String candidateName, String jobTitle, String companyName, String dateStr, String meetingLink) {
         String subject = "Interview Scheduled: " + jobTitle;
         String htmlContent = 

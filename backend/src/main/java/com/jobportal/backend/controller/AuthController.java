@@ -90,7 +90,7 @@ public class AuthController {
         // 4. Generate OTP
         String otp = String.valueOf((int) (Math.random() * 900000) + 100000);
         user.setOtpCode(otp);
-        user.setOtpExpiry(LocalDateTime.now().plusMinutes(5));
+        user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
         user.setEnabled(false); 
         user.setVerified(false);
 
@@ -148,7 +148,7 @@ public class AuthController {
 
         String otp = String.valueOf((int) (Math.random() * 900000) + 100000);
         user.setOtpCode(otp);
-        user.setOtpExpiry(LocalDateTime.now().plusMinutes(5));
+        user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
         userRepository.save(user);
 
         emailService.sendOtpEmail(user.getEmail(), otp);
