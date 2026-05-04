@@ -1,42 +1,85 @@
 package com.jobportal.backend.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import jakarta.mail.internet.MimeMessage;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    @Value("${brevo.api.key:}")
+    private String brevoApiKey;
 
-    @Value("${spring.mail.username}")
-    private String fromEmail;
+    @Value("${brevo.sender.email:hariomdubey906@gmail.com}")
+    private String senderEmail;
+
+    @Value("${brevo.sender.name:PrimeJobs}")
+    private String senderName;
+
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @jakarta.annotation.PostConstruct
     public void init() {
-        System.out.println("✅ Email Service initialized. Sender: " + fromEmail);
+        if (brevoApiKey == null || brevoApiKey.isEmpty()) {
+            System.err.println("⚠️ WARNING: BREVO_API_KEY is not set! Emails will NOT be sent.");
+        } else {
+            System.out.println("✅ Email Service (Brevo) initialized. Sender: " + senderEmail);
+        }
     }
 
     @Async
     public void sendEmail(String to, String subject, String body, boolean isHtml) {
+        if (brevoApiKey == null || brevoApiKey.isEmpty()) {
+            System.err.println("❌ Email NOT sent: BREVO_API_KEY is missing.");
+            return;
+        }
+
         try {
-            System.out.println("📧 Sending email to: " + to + " from: " + fromEmail);
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(body, isHtml);
-            helper.setFrom(fromEmail);
-            mailSender.send(message);
-            System.out.println("✅ Email sent successfully to: " + to);
+            System.out.println("📧 Sending email via Brevo to: " + to);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("api-key", brevoApiKey);
+
+            Map<String, Object> sender = new HashMap<>();
+            sender.put("name", senderName);
+            sender.put("email", senderEmail);
+
+            Map<String, String> recipient = new HashMap<>();
+            recipient.put("email", to);
+
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("sender", sender);
+            payload.put("to", List.of(recipient));
+            payload.put("subject", subject);
+            if (isHtml) {
+                payload.put("htmlContent", body);
+            } else {
+                payload.put("textContent", body);
+            }
+
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
+            ResponseEntity<String> response = restTemplate.postForEntity(
+                "https://api.brevo.com/v3/smtp/email", request, String.class
+            );
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                System.out.println("✅ Email sent successfully to: " + to);
+            } else {
+                System.err.println("❌ Brevo API error: " + response.getStatusCode() + " - " + response.getBody());
+            }
+
         } catch (Exception e) {
-            System.err.println("❌ Email failed to: " + to + " | Error: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("❌ Failed to send email to " + to + ": " + e.getMessage());
+            if (e.getCause() != null) {
+                System.err.println("🔍 CAUSE: " + e.getCause().getMessage());
+            }
         }
     }
 
@@ -56,7 +99,7 @@ public class EmailService {
                 "</div>" +
                 "<p style='font-size: 13px; color: #94a3b8;'>If you didn't request this, ignore this email.</p>" +
                 "<hr style='border: 0; border-top: 1px solid #f1f5f9; margin: 30px 0;'>" +
-                "<p style='text-align: center; font-size: 12px; color: #cbd5e1; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;'>© 2026 PrimeJobs Ecosystem</p>" +
+                "<p style='text-align: center; font-size: 12px; color: #cbd5e1; font-weight: bold; letter-spacing: 1px;'>© 2026 PrimeJobs Ecosystem</p>" +
             "</div>";
         sendEmail(to, subject, htmlContent, true);
     }
