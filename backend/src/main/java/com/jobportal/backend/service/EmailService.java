@@ -1,63 +1,82 @@
 package com.jobportal.backend.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import jakarta.mail.internet.MimeMessage;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    @Value("${resend.api.key:}")
+    private String resendApiKey;
 
-    @org.springframework.beans.factory.annotation.Value("${spring.mail.username}")
+    @Value("${resend.from.email:onboarding@resend.dev}")
     private String fromEmail;
+
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @jakarta.annotation.PostConstruct
     public void init() {
-        if (fromEmail == null || fromEmail.isEmpty() || fromEmail.contains("your-email")) {
-            System.err.println("⚠️ WARNING: Email Service initialized without a valid SMTP username!");
+        if (resendApiKey == null || resendApiKey.isEmpty()) {
+            System.err.println("⚠️ WARNING: RESEND_API_KEY is not set! Emails will NOT be sent.");
         } else {
-            System.out.println("✅ Email Service initialized with user: " + fromEmail);
+            System.out.println("✅ Email Service (Resend) initialized. From: " + fromEmail);
         }
     }
 
-    @org.springframework.scheduling.annotation.Async
+    @Async
     public void sendEmail(String to, String subject, String body, boolean isHtml) {
-        String cleanFrom = (fromEmail != null) ? fromEmail.trim() : null;
-        
-        if (cleanFrom == null || cleanFrom.isEmpty() || cleanFrom.contains("your-email")) {
-            System.err.println("❌ SMTP ERROR: spring.mail.username is not configured correctly. Current value: " + cleanFrom);
+        if (resendApiKey == null || resendApiKey.isEmpty()) {
+            System.err.println("❌ Email NOT sent: RESEND_API_KEY is missing.");
             return;
         }
 
         try {
-            System.out.println("📧 Attempting to send email to: " + to + " using " + cleanFrom);
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(body, isHtml);
-            helper.setFrom(cleanFrom); // Simplified From header
-            
-            mailSender.send(message);
-            System.out.println("✅ Email sent successfully to: " + to);
+            System.out.println("📧 Sending email via Resend to: " + to);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(resendApiKey);
+
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("from", "PrimeJobs <" + fromEmail + ">");
+            payload.put("to", List.of(to));
+            payload.put("subject", subject);
+            if (isHtml) {
+                payload.put("html", body);
+            } else {
+                payload.put("text", body);
+            }
+
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
+            ResponseEntity<String> response = restTemplate.postForEntity(
+                "https://api.resend.com/emails", request, String.class
+            );
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                System.out.println("✅ Email sent successfully to: " + to);
+            } else {
+                System.err.println("❌ Resend API error: " + response.getStatusCode() + " - " + response.getBody());
+            }
+
         } catch (Exception e) {
-            System.err.println("❌ SMTP ERROR to " + to + ": " + e.getMessage());
+            System.err.println("❌ Failed to send email to " + to + ": " + e.getMessage());
             if (e.getCause() != null) {
                 System.err.println("🔍 CAUSE: " + e.getCause().getMessage());
             }
-            e.printStackTrace(); // Log full stack trace to Railway logs
         }
     }
 
-    @org.springframework.scheduling.annotation.Async
+    @Async
     public void sendOtpEmail(String to, String otp) {
         String subject = "Verify your PrimeJobs Account";
-        String htmlContent = 
+        String htmlContent =
             "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #e2e8f0; border-radius: 16px; padding: 40px; color: #1e293b;'>" +
                 "<div style='text-align: center; margin-bottom: 30px;'>" +
                     "<div style='background: #2563eb; color: white; width: 40px; height: 40px; line-height: 40px; border-radius: 10px; display: inline-block; font-weight: bold; font-size: 24px;'>J</div>" +
@@ -72,14 +91,14 @@ public class EmailService {
                 "<hr style='border: 0; border-top: 1px solid #f1f5f9; margin: 30px 0;'>" +
                 "<p style='text-align: center; font-size: 12px; color: #cbd5e1; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;'>© 2026 PrimeJobs Ecosystem</p>" +
             "</div>";
-            
+
         sendEmail(to, subject, htmlContent, true);
     }
 
-    @org.springframework.scheduling.annotation.Async
+    @Async
     public void sendInterviewInvite(String to, String candidateName, String jobTitle, String companyName, String dateStr, String meetingLink) {
         String subject = "Interview Scheduled: " + jobTitle;
-        String htmlContent = 
+        String htmlContent =
             "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #e2e8f0; border-radius: 16px; padding: 40px; color: #1e293b;'>" +
                 "<h3 style='color: #0f172a;'>Hello " + candidateName + ",</h3>" +
                 "<p>Great news! Your interview for <b>" + jobTitle + "</b> at <b>" + companyName + "</b> has been scheduled.</p>" +
