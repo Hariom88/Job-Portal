@@ -15,6 +15,15 @@ public class EmailService {
     @org.springframework.beans.factory.annotation.Value("${spring.mail.username}")
     private String fromEmail;
 
+    @jakarta.annotation.PostConstruct
+    public void init() {
+        if (fromEmail == null || fromEmail.isEmpty() || fromEmail.contains("your-email")) {
+            System.err.println("⚠️ WARNING: Email Service initialized without a valid SMTP username!");
+        } else {
+            System.out.println("✅ Email Service initialized with user: " + fromEmail);
+        }
+    }
+
     @org.springframework.scheduling.annotation.Async
     public void sendEmail(String to, String subject, String body, boolean isHtml) {
         String cleanFrom = (fromEmail != null) ? fromEmail.trim() : null;
