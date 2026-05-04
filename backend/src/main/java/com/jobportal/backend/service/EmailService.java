@@ -17,25 +17,31 @@ public class EmailService {
 
     @org.springframework.scheduling.annotation.Async
     public void sendEmail(String to, String subject, String body, boolean isHtml) {
-        if (fromEmail == null || fromEmail.isEmpty() || fromEmail.equals("your-email@gmail.com")) {
-            System.err.println("❌ SMTP ERROR: spring.mail.username is not configured correctly. Current value: " + fromEmail);
+        String cleanFrom = (fromEmail != null) ? fromEmail.trim() : null;
+        
+        if (cleanFrom == null || cleanFrom.isEmpty() || cleanFrom.contains("your-email")) {
+            System.err.println("❌ SMTP ERROR: spring.mail.username is not configured correctly. Current value: " + cleanFrom);
             return;
         }
 
         try {
+            System.out.println("📧 Attempting to send email to: " + to + " using " + cleanFrom);
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(body, isHtml);
-            helper.setFrom("PrimeJobs <" + fromEmail + ">");
+            helper.setFrom(cleanFrom); // Simplified From header
             
             mailSender.send(message);
             System.out.println("✅ Email sent successfully to: " + to);
         } catch (Exception e) {
             System.err.println("❌ SMTP ERROR to " + to + ": " + e.getMessage());
-            // e.printStackTrace(); 
+            if (e.getCause() != null) {
+                System.err.println("🔍 CAUSE: " + e.getCause().getMessage());
+            }
+            e.printStackTrace(); // Log full stack trace to Railway logs
         }
     }
 
